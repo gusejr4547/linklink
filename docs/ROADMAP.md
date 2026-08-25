@@ -84,7 +84,7 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - 로그인 사용자용 공통 헤더 컴포넌트 골격 구현 (서비스명, 로그아웃 버튼, 테마 스위처)
   - 랜딩 → 회원가입 → 로그인 → 링크 목록으로 이어지는 이동 경로가 클릭만으로 끊김 없이 통과되는지 확인
 
-- **Task 003: 타입 정의 및 데이터 모델 설계**
+- ✅ **Task 003: 타입 정의 및 데이터 모델 설계**
   - `types/link.ts`에 `Link` 인터페이스 정의 (id, user_id, url, title, thumbnail_url, description, tags, memo, is_read, is_favorite, created_at)
   - 링크 생성 입력 타입(`CreateLinkInput`), 메타데이터 수집 결과 타입(`LinkMetadata`) 정의
   - 검색·필터 상태 타입(`LinkFilter`: 검색어, 선택 태그, 읽음상태, 즐겨찾기) 정의
