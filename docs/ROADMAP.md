@@ -77,7 +77,7 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - 스타터 잔여 컴포넌트 제거: `components/tutorial/**`, `hero.tsx`, `deploy-button.tsx`, `next-logo.tsx`, `supabase-logo.tsx`
   - 완료 기준: `npm run build` 성공 + 기존 인증 화면 4종의 시각적 깨짐 없음
 
-- **Task 002: 라우트 구조 및 공통 레이아웃 골격 구성**
+- ✅ **Task 002: 라우트 구조 및 공통 레이아웃 골격 구성**
   - 랜딩(`/`), 링크 목록 홈(`/links`) 라우트 확정 및 빈 껍데기 페이지 생성
   - 기존 `app/protected/**`를 링크 목록 페이지 기준으로 재구성 (또는 `/links`로 이관 후 제거)
   - `lib/supabase/proxy.ts`의 리다이렉트 규칙을 새 라우트에 맞게 수정 (로그인 후 목적지 = 링크 목록)
