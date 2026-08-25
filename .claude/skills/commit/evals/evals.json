@@ -1,0 +1,43 @@
+{
+  "skill_name": "commit",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "eval-0-single-fix",
+      "prompt": "커밋해줘",
+      "expected_output": "off-by-one 버그 수정 하나만 존재. 단일 fix 커밋이 '🐛 fix: ...' 형식으로 생성되고, 명령형 어조, 첫 줄 72자 미만, Claude 서명 없음.",
+      "assertions": [
+        "commit_created",
+        "single_commit",
+        "format_matches_emoji_type_desc",
+        "correct_type_fix",
+        "first_line_under_72_chars",
+        "no_claude_signature"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "eval-1-mixed",
+      "prompt": "커밋해줘",
+      "expected_output": "무관한 변경사항 두 개(README 오타 수정=docs, 새 기능 파일=feat)가 섞여 있음. 분할을 제안하거나 2개의 개별 커밋(docs, feat)으로 나눠 커밋해야 함. 하나의 커밋에 두 관심사를 섞으면 안 됨.",
+      "assertions": [
+        "commit_created",
+        "split_into_two_commits_or_proposed",
+        "no_single_commit_mixing_both_files",
+        "no_claude_signature"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "eval-2-staged-only",
+      "prompt": "커밋해줘",
+      "expected_output": "src/a.ts만 git add로 스테이지되어 있고 src/b.ts는 언스테이지 상태. 커밋에는 a.ts만 포함되어야 하며 b.ts는 커밋되지 않고 워킹 디렉터리에 수정된 채로 남아 있어야 함.",
+      "assertions": [
+        "commit_created",
+        "only_staged_file_committed",
+        "unstaged_file_untouched",
+        "no_claude_signature"
+      ]
+    }
+  ]
+}
