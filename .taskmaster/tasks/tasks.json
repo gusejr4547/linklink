@@ -85,11 +85,12 @@
         "dependencies": [
           "5"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 5,
         "recommendedSubtasks": 5,
-        "expansionPrompt": "Divide into: (1) Create LinkCard component with thumbnail/title/domain/tags/memo display and action buttons (read/favorite/delete) with proper event handling to prevent card click propagation, (2) Create SearchFilterBar component UI shell (no logic, just input/select/button elements), (3) Create LinkListSkeleton component for loading states, (4) Update app/links/page.tsx to render grid layout with dummy data from lib/dummy-links.ts, handle empty state, and integrate all components, (5) Test responsive grid (1/2/3 columns) and dark mode appearance."
+        "expansionPrompt": "Divide into: (1) Create LinkCard component with thumbnail/title/domain/tags/memo display and action buttons (read/favorite/delete) with proper event handling to prevent card click propagation, (2) Create SearchFilterBar component UI shell (no logic, just input/select/button elements), (3) Create LinkListSkeleton component for loading states, (4) Update app/links/page.tsx to render grid layout with dummy data from lib/dummy-links.ts, handle empty state, and integrate all components, (5) Test responsive grid (1/2/3 columns) and dark mode appearance.",
+        "updatedAt": "2026-08-25T14:47:06.629Z"
       },
       {
         "id": "7",
@@ -452,9 +453,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-25T12:08:49.777Z",
+      "lastModified": "2026-08-25T14:47:06.629Z",
       "taskCount": 18,
-      "completedCount": 6,
+      "completedCount": 7,
       "tags": [
         "master"
       ]
