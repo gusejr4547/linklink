@@ -91,6 +91,12 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - Server Action 반환 규격 통일 타입(`ActionResult<T>`: 성공/실패 + 에러 메시지) 정의
   - `links` 테이블 DDL 초안 작성 (마이그레이션 실행은 Task 008에서 수행)
 
+- ✅ **Task 003-1: profiles 테이블 및 사용자 데이터 동기화 트리거 설계 (제안)**
+  - Supabase 공식 [managing-user-data](https://supabase.com/docs/guides/auth/managing-user-data) 가이드를 따른 인프라 확장. PRD 9절 `[가정]` 항목 근거 — F001~F007 어떤 기능에도 매핑되지 않는 아키텍처 정비
+  - `types/profile.ts`에 `Profile` 인터페이스 정의 (id, display_name, avatar_url, created_at, updated_at)
+  - `types/database.ts`에 `PROFILES_TABLE_DDL` 추가: `profiles` 테이블 + `updated_at` 자동 갱신 트리거 + `auth.users` insert 시 자동 동기화하는 `handle_new_user()` 트리거
+  - 1인 개인용 서비스 특성상 공식 예시의 `anon` SELECT 권한은 제외하고 본인 행만 select/update 가능하도록 RLS 설계 (초안 주석, 실제 적용은 links 테이블과 함께 Task 008에서 수행)
+
 ### Phase 2: UI/UX 완성 (더미 데이터 활용)
 
 모든 화면을 하드코딩된 더미 데이터로 완성합니다. 이 단계가 끝나면 DB 없이도 전체 사용자 흐름을 클릭으로 체험할 수 있어야 합니다.

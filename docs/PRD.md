@@ -120,6 +120,18 @@
 
 description은 별도 컬럼(text, nullable)으로 함께 저장하되 목록 카드에는 노출하지 않고 저장만 해둔다(향후 상세 뷰 확장 대비). 태그는 Postgres 배열 컬럼으로, 자동완성 없이 자유 텍스트 입력(쉼표 구분)으로 구현하며 태그 마스터 테이블은 만들지 않는다 — 당장은 자유 텍스트로 충분할 것으로 판단.
 
+### profiles
+
+| 필드명 | 설명 | 타입/관계 |
+|---|---|---|
+| id | 사용자 식별자 | uuid, PK → auth.users.id |
+| display_name | 표시 이름 | text, nullable |
+| avatar_url | 프로필 이미지 주소 | text, nullable |
+| created_at | 생성 일시 | timestamptz, default now() |
+| updated_at | 수정 일시 | timestamptz, default now() |
+
+`auth.users`에 새 계정이 생성될 때 트리거로 자동 동기화되는 인프라 테이블이며, F001~F007 어느 기능에도 속하지 않는다. `[가정]` 참고.
+
 ## 7. 기술 스택
 
 | 영역 | 선택 | 비고 |
@@ -144,6 +156,7 @@ description은 별도 컬럼(text, nullable)으로 함께 저장하되 목록 �
 - `[가정]` 메타데이터 수집은 직접 파싱 로직을 구현하는 대신 잘 알려진 오픈소스 라이브러리 `open-graph-scraper`를 사용하며(대안: `metascraper`, 더 모듈형이지만 MVP에는 과함), 실패 시 제목 수동 입력으로 대체한다.
 - `[확인 필요]` 현재 프로젝트에는 Tailwind CSS 3.4.1이 설치되어 있어, 4로 업그레이드하는 작업이 별도로 필요함.
 - `[확인 필요]` 메타데이터 수집 시 일부 사이트(예: 로그인 필요 페이지, SNS 비공개 게시물)는 OG 태그를 못 가져올 수 있음 — 실패 케이스 UX(수동 입력 폴백)로 충분한지 실사용 후 재확인 필요.
+- `[가정]` `profiles` 테이블은 Supabase 공식 [managing-user-data](https://supabase.com/docs/guides/auth/managing-user-data) 가이드를 따른 인프라 확장이며 현재 어떤 기능(F001~F007)에도 매핑되지 않는다. `auth.users`를 클라이언트/조인에 직접 노출하지 않기 위한 것으로, 추후 표시 이름·아바타 설정 UI가 필요해질 때 스키마 재작업 없이 바로 쓸 수 있게 미리 마련해 둔다. 1인 개인용 서비스 특성상 공식 예시의 `anon` SELECT 권한은 부여하지 않고 본인 행만 조회·수정 가능하도록 RLS를 제한한다.
 
 ---
 
