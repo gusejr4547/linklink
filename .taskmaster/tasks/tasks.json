@@ -117,7 +117,86 @@
           "8"
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install zod and sonner dependencies",
+            "description": "Install required npm packages: zod for schema validation and sonner for toast notifications",
+            "dependencies": [],
+            "details": "Run `npm install zod sonner` to add both dependencies to the project. Zod will be used for input validation in Server Actions, and sonner provides the toast notification system for user feedback on save/delete operations.",
+            "status": "pending",
+            "testStrategy": "Verify package.json includes both zod and sonner in dependencies. Run `npm list zod sonner` to confirm installation."
+          },
+          {
+            "id": 2,
+            "title": "Create lib/actions/links.ts with createLink Server Action",
+            "description": "Implement the createLink Server Action with zod schema validation, user authentication check, Supabase insert, and revalidatePath",
+            "dependencies": [
+              1
+            ],
+            "details": "Create lib/actions/links.ts with 'use server' directive. Define createLinkSchema using zod to validate url (must be valid URL), title (min 1 char), and optional fields (thumbnail_url, description, tags array, memo). Implement createLink function that: (1) validates input with zod, (2) gets authenticated user via createClient().auth.getUser(), (3) returns error if not authenticated, (4) inserts row into links table with user_id, (5) calls revalidatePath('/links'), (6) returns ActionResult with success/error. Handle zod validation errors separately from database errors.",
+            "status": "pending",
+            "testStrategy": "TypeScript compilation check. Manual test by temporarily calling the action from a test page with valid/invalid inputs to verify zod error messages appear correctly."
+          },
+          {
+            "id": 3,
+            "title": "Implement deleteLink Server Action with RLS backup",
+            "description": "Add deleteLink Server Action to lib/actions/links.ts with user authentication and RLS backup check",
+            "dependencies": [
+              2
+            ],
+            "details": "In lib/actions/links.ts, implement deleteLink(id: string) that: (1) gets authenticated user, (2) returns error if not authenticated, (3) calls supabase.from('links').delete().eq('id', id).eq('user_id', user.id) to ensure RLS backup (only delete own links), (4) calls revalidatePath('/links'), (5) returns ActionResult. Catch and return generic error message on failure.",
+            "status": "pending",
+            "testStrategy": "Manual test by attempting to delete another user's link (should fail silently due to RLS). Verify successful deletion triggers revalidation."
+          },
+          {
+            "id": 4,
+            "title": "Update save-link-dialog.tsx with createLink action and toast",
+            "description": "Replace dummy save logic with actual createLink call, add pending state, and implement toast notifications for success/error feedback",
+            "dependencies": [
+              2
+            ],
+            "details": "Update components/save-link-dialog.tsx: (1) Import createLink from lib/actions/links and toast from sonner. (2) Replace dummy save handler with async call to createLink(). (3) Use useTransition or useState to track pending state and disable submit button during submission. (4) On success, show toast.success('링크가 저장되었습니다'), close dialog, and reset form. (5) On error, show toast.error(error message from ActionResult) and keep dialog open. (6) Ensure form fields map correctly to CreateLinkInput schema.",
+            "status": "pending",
+            "testStrategy": "Playwright MCP: Open dialog, submit empty URL → verify validation error toast. Submit valid URL → verify success toast, dialog closes, form resets. Check button disabled state during submission."
+          },
+          {
+            "id": 5,
+            "title": "Update link-card.tsx with delete confirmation and action",
+            "description": "Add AlertDialog for delete confirmation and wire up deleteLink Server Action with toast feedback",
+            "dependencies": [
+              3
+            ],
+            "details": "Update components/link-card.tsx: (1) Import AlertDialog components from @/components/ui/alert-dialog, deleteLink from lib/actions/links, and toast from sonner. (2) Add delete button that triggers AlertDialog with '정말 삭제하시겠습니까?' confirmation message. (3) On confirm, call deleteLink(link.id). (4) Show toast.success('링크가 삭제되었습니다') on success or toast.error() on failure. (5) Use pending state to disable delete button during deletion. (6) Ensure delete button click doesn't trigger card's parent onClick (stopPropagation).",
+            "status": "pending",
+            "testStrategy": "Playwright MCP: Click delete button → verify AlertDialog appears. Click cancel → verify nothing happens. Click delete again → confirm → verify link disappears from list and success toast shown."
+          },
+          {
+            "id": 6,
+            "title": "Convert app/links/page.tsx to real data with getLinks",
+            "description": "Replace dummy data with actual Supabase query using getLinks(), handle loading/error states with Suspense boundaries",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Update app/links/page.tsx: (1) Remove import of dummyLinks. (2) Import getLinks from lib/actions/links (or create separate query function in lib/queries/links.ts). (3) Make page an async Server Component that awaits getLinks(user.id, empty filter). (4) Wrap link list in Suspense with skeleton fallback. (5) Add error.tsx in app/links/ to handle query errors. (6) Add loading.tsx with skeleton UI. (7) Handle empty state when links.length === 0 with proper empty state message and save button.",
+            "status": "pending",
+            "testStrategy": "Playwright MCP: Navigate to /links → verify loading skeleton appears briefly. With 0 links → verify empty state UI. With links → verify real data renders. Simulate error by breaking Supabase connection → verify error.tsx displays."
+          },
+          {
+            "id": 7,
+            "title": "Add Toaster to layout and run full E2E test",
+            "description": "Add sonner Toaster component to app/layout.tsx and execute comprehensive E2E test covering all save/delete scenarios using Playwright MCP",
+            "dependencies": [
+              4,
+              5,
+              6
+            ],
+            "details": "Update app/layout.tsx: (1) Import { Toaster } from 'sonner'. (2) Add <Toaster position=\"top-center\" /> inside body tag (after children or theme provider). Run comprehensive Playwright MCP E2E test covering: (1) Save with validation errors (empty URL, invalid URL format) → verify error toasts. (2) Save with valid URL → verify success toast, link appears in list. (3) Delete with confirmation → click cancel → verify nothing happens, click confirm → verify link removed and success toast. (4) Empty state → verify message and save button visible. (5) Multiple saves → verify list updates correctly. (6) Duplicate submission prevention → verify button disabled during pending. Document all test results.",
+            "status": "pending",
+            "testStrategy": "Full Playwright MCP test suite as described in Task 9 test strategy: validation errors, save success, delete confirmation flow, empty state, duplicate prevention. All scenarios must pass before marking task complete."
+          }
+        ]
       },
       {
         "id": 10,
@@ -169,7 +248,82 @@
           "12"
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install use-debounce dependency for search input debouncing",
+            "description": "Install the use-debounce npm package required for debounced search input handling in the search filter bar component.",
+            "dependencies": [],
+            "details": "Run `npm install use-debounce` to add the dependency. This package provides the useDebouncedCallback hook that will be used to prevent excessive search queries while the user is typing. Verify installation by checking package.json and ensuring the package is listed in dependencies.",
+            "status": "pending",
+            "testStrategy": "Verify package.json contains use-debounce in dependencies. Run `npm list use-debounce` to confirm successful installation."
+          },
+          {
+            "id": 2,
+            "title": "Enhance getLinks function in lib/queries/links.ts with full filtering support",
+            "description": "Update the getLinks function to support text search across title/memo/tags, tag array intersection, read status filtering, and favorite filtering using Postgres operators.",
+            "dependencies": [],
+            "details": "Modify lib/queries/links.ts getLinks function to accept optional LinkFilter parameter. Implement text search using Postgres ilike operator for title and memo, and array contains operator (cs.{}) for tags with OR logic. Add tag intersection filter using contains operator for selectedTags array. Add read status filter with eq(true/false) based on readStatus value ('read'/'unread'/'all'). Add favorite filter using eq(true) when favoriteOnly is true. Maintain existing order by created_at descending. Handle edge cases: empty filters, null values, special characters in search query.",
+            "status": "pending",
+            "testStrategy": "Write unit-style tests using mcp__supabase__execute_sql to insert test data with various combinations of title/memo/tags/is_read/is_favorite, then verify getLinks returns correct results for each filter type individually and in combination."
+          },
+          {
+            "id": 3,
+            "title": "Create SearchFilterBar client component with URL state management",
+            "description": "Build a new client component components/search-filter-bar.tsx that manages search query, tag selection, read status, and favorite filters with URL query parameter synchronization.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create components/search-filter-bar.tsx as 'use client' component. Import useRouter, useSearchParams, useTransition from next/navigation. Accept availableTags prop (string[]). Read initial state from searchParams: q (search query), tag (selected tag), read (read status: all/read/unread), fav (favorite boolean). Implement updateParams helper function that creates new URLSearchParams, applies updates, removes empty/null/'all' values, and uses startTransition with router.push (scroll: false). Use local state for searchQuery to provide immediate feedback before debounce completes. Render Input for search, Select for tag dropdown, Select for read status, Button for favorite toggle (variant changes based on state), and reset Button that clears all params.",
+            "status": "pending",
+            "testStrategy": "Manual testing: verify component renders without errors, dropdowns populate with correct options, buttons respond to clicks. URL state sync will be tested in integration phase."
+          },
+          {
+            "id": 4,
+            "title": "Implement debounced search input with 500ms delay",
+            "description": "Add debounced search functionality to the SearchFilterBar component using useDebouncedCallback to prevent excessive URL updates and server requests while typing.",
+            "dependencies": [
+              3
+            ],
+            "details": "Import useDebouncedCallback from use-debounce package. Create debouncedSearch callback with 500ms delay that calls updateParams({ q: value }). Implement handleSearchChange that updates local searchQuery state immediately (for instant UI feedback) and triggers debouncedSearch. Connect handleSearchChange to Input component's onChange event. Ensure searchQuery state initializes from searchParams.get('q') on mount to preserve state on navigation.",
+            "status": "pending",
+            "testStrategy": "Playwright MCP test: type 'react' into search input, verify URL does NOT update immediately, wait 500ms, verify URL contains ?q=react. Type additional characters and verify debounce resets (only final value appears in URL after 500ms of no typing)."
+          },
+          {
+            "id": 5,
+            "title": "Implement filter controls and reset functionality",
+            "description": "Complete the SearchFilterBar component by wiring up tag select, read status select, favorite toggle button, and reset button with proper state management and URL synchronization.",
+            "dependencies": [
+              3
+            ],
+            "details": "Wire tag Select to call updateParams({ tag: value }) on change, with empty string option for 'all tags'. Wire read status Select to call updateParams({ read: value }) on change, with options 'all'/'read'/'unread'. Wire favorite Button to toggle between updateParams({ fav: 'true' }) and updateParams({ fav: null }), changing variant between 'default' and 'outline' based on favoriteOnly state. Implement handleReset that calls router.push('/links') to clear all query params. Add loading indicators during isPending transitions if needed.",
+            "status": "pending",
+            "testStrategy": "Playwright MCP test: select tag from dropdown, verify ?tag=value in URL. Select 'read' status, verify ?read=read. Click favorite button, verify ?fav=true and button style changes. Click reset button, verify URL returns to /links with no params and all filters clear."
+          },
+          {
+            "id": 6,
+            "title": "Update app/links/page.tsx to integrate SearchFilterBar and filtered results",
+            "description": "Modify the links list page to read searchParams, construct LinkFilter object, pass to getLinks query, extract availableTags from results, and pass to SearchFilterBar component.",
+            "dependencies": [
+              2,
+              5
+            ],
+            "details": "Update app/links/page.tsx to accept searchParams prop (Next.js App Router convention). Extract q, tag, read, fav from searchParams. Construct LinkFilter object: { searchQuery: q || undefined, selectedTags: tag ? [tag] : undefined, readStatus: read as 'all'|'read'|'unread' || 'all', favoriteOnly: fav === 'true' }. Pass filter to getLinks(filter). Extract availableTags from returned links using Array.from(new Set(links.flatMap(link => link.tags))).sort(). Render SearchFilterBar with availableTags prop. Pass filtered links to existing link card grid. Preserve existing loading/error states.",
+            "status": "pending",
+            "testStrategy": "Playwright MCP test: navigate to /links?q=test&tag=nextjs&read=read&fav=true, verify SearchFilterBar displays correct selected values, verify only links matching ALL criteria are displayed. Test with no results scenario."
+          },
+          {
+            "id": 7,
+            "title": "Add empty search result state and comprehensive E2E filter testing",
+            "description": "Implement empty search result UI and conduct comprehensive Playwright MCP testing of all filter combinations, URL persistence, browser navigation, and edge cases.",
+            "dependencies": [
+              6
+            ],
+            "details": "Add empty result state UI in app/links/page.tsx: detect when links.length === 0 AND any filter is active (searchParams has q/tag/read/fav), show message '검색 결과가 없습니다' with reset button. Run comprehensive Playwright MCP tests: (1) Text search: type 'react', wait 500ms, verify URL ?q=react, verify filtered results. (2) Tag filter: select tag, verify URL and results. (3) Read status: select read/unread, verify filtering. (4) Favorite: toggle, verify filtering. (5) Combined filters: apply search + tag + read + favorite simultaneously, verify AND logic. (6) URL persistence: refresh page, verify filters persist. (7) Browser back/forward: apply filters, navigate away, use back button, verify filters restore. (8) Reset: click reset, verify all filters clear and URL returns to /links. (9) Empty results: create filter combination with no matches, verify empty state displays. (10) Special characters: search for terms with quotes/slashes/unicode, verify no errors.",
+            "status": "pending",
+            "testStrategy": "## 테스트 체크리스트 (Playwright MCP)\n\n1. 텍스트 검색: 검색창에 'react' 입력 → 500ms 대기 → URL에 ?q=react 확인 → 제목/메모/태그에 'react' 포함된 링크만 표시\n2. 태그 필터: 드롭다운에서 'nextjs' 선택 → URL에 ?tag=nextjs → nextjs 태그 링크만 표시\n3. 읽음 상태: '읽음' 선택 → ?read=read → 읽음 링크만 표시\n4. 즐겨찾기: 버튼 클릭 → ?fav=true → 즐겨찾기 링크만 표시\n5. 복합 필터: search + tag + read + favorite 동시 적용 → AND 로직 검증\n6. URL 지속성: 필터 적용 후 새로고침 → 필터 상태 유지 확인\n7. 뒤로가기: 필터 적용 → 다른 페이지 이동 → 뒤로가기 → 필터 복원 확인\n8. 초기화: 필터 적용 후 초기화 버튼 → 모든 필터 제거 및 /links로 복귀\n9. 빈 결과: 매칭 없는 필터 조합 → 빈 상태 UI 표시 확인\n10. 특수문자: 따옴표/슬래시/유니코드 검색 → 에러 없이 처리"
+          }
+        ]
       },
       {
         "id": 14,
