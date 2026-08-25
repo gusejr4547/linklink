@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 LinkLink — 흩어진 링크를 한곳에 저장하고 태그·메모·읽음 상태로 다시 찾을 수 있게 하는 1인 사용자용 링크 아카이브 서비스.
 
-- 전체 요구사항: @docs/PRD.md
-- 개발 로드맵 및 작업 워크플로우: @docs/ROADMAP.md
+- 전체 요구사항: docs/PRD.md
+- 개발 로드맵 및 작업 워크플로우: docs/ROADMAP.md
 
 ## 기술 스택 관련 주의사항
 
