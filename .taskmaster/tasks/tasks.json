@@ -68,11 +68,12 @@
         "dependencies": [
           "4"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 2,
         "recommendedSubtasks": 0,
-        "expansionPrompt": ""
+        "expansionPrompt": "",
+        "updatedAt": "2026-08-25T12:08:49.777Z"
       },
       {
         "id": "6",
@@ -451,9 +452,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-25T11:06:47.029Z",
+      "lastModified": "2026-08-25T12:08:49.777Z",
       "taskCount": 18,
-      "completedCount": 5,
+      "completedCount": 6,
       "tags": [
         "master"
       ]
