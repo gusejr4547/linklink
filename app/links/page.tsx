@@ -1,7 +1,59 @@
+import { LinkList } from "@/components/link-list";
+import { LinkListSkeleton } from "@/components/link-list-skeleton";
+import { SearchFilterBar } from "@/components/search-filter-bar";
+import { Button } from "@/components/ui/button";
+import { dummyLinks } from "@/lib/dummy-links";
+import { Plus } from "lucide-react";
+import { connection } from "next/server";
+import { Suspense } from "react";
+
+async function LinkGrid() {
+  await connection();
+
+  const links = [...dummyLinks].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  if (links.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-4 border border-dashed border-[#C7BC9E] px-6 py-20 text-center dark:border-[#3A413C]">
+        <p className="font-[family-name:var(--font-display)] text-lg text-[#23282A] dark:text-[#EAE2D0]">
+          아직 저장된 링크가 없어요
+        </p>
+        <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
+          나중에 다시 보고 싶은 페이지를 저장해보세요.
+        </p>
+        <Button className="mt-2 rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
+          <Plus className="size-4" />
+          링크 저장
+        </Button>
+      </div>
+    );
+  }
+
+  return <LinkList links={links} />;
+}
+
 export default function LinksPage() {
+  const tags = Array.from(new Set(dummyLinks.flatMap((link) => link.tags))).sort();
+
   return (
-    <div className="flex-1 w-full flex flex-col gap-8">
-      <h1 className="font-bold text-2xl">Links</h1>
+    <div className="flex flex-1 flex-col gap-6">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[#23282A] dark:text-[#EAE2D0]">
+          내 링크
+        </h1>
+        <Button className="rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
+          <Plus className="size-4" />
+          링크 저장
+        </Button>
+      </div>
+
+      <SearchFilterBar tags={tags} />
+
+      <Suspense fallback={<LinkListSkeleton />}>
+        <LinkGrid />
+      </Suspense>
     </div>
   );
 }

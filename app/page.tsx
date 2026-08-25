@@ -5,25 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { Gowun_Batang, Gothic_A1, IBM_Plex_Mono } from "next/font/google";
-
-const gowunBatang = Gowun_Batang({
-  weight: "700",
-  subsets: ["latin"],
-  variable: "--font-display",
-});
-
-const gothicA1 = Gothic_A1({
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-  variable: "--font-body",
-});
-
-const plexMono = IBM_Plex_Mono({
-  weight: ["400", "500"],
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
+import { gowunBatang, gothicA1, plexMono } from "@/lib/fonts";
 
 const navLinkClass =
   "inline-flex h-11 items-center justify-center px-4 text-xs font-medium tracking-widest uppercase border border-[#23282A] text-[#23282A] transition-colors hover:bg-[#23282A] hover:text-[#EAE2D0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E6B5C] dark:border-[#EAE2D0] dark:text-[#EAE2D0] dark:hover:bg-[#EAE2D0] dark:hover:text-[#1B1F1C] dark:focus-visible:outline-[#35C9A8]";
