@@ -1,5 +1,6 @@
 import { LinkList } from "@/components/link-list";
 import { LinkListSkeleton } from "@/components/link-list-skeleton";
+import { SaveLinkDialog } from "@/components/save-link-dialog";
 import { SearchFilterBar } from "@/components/search-filter-bar";
 import { Button } from "@/components/ui/button";
 import { dummyLinks } from "@/lib/dummy-links";
@@ -23,10 +24,14 @@ async function LinkGrid() {
         <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
           나중에 다시 보고 싶은 페이지를 저장해보세요.
         </p>
-        <Button className="mt-2 rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
-          <Plus className="size-4" />
-          링크 저장
-        </Button>
+        <SaveLinkDialog
+          trigger={
+            <Button className="mt-2 rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
+              <Plus className="size-4" />
+              링크 저장
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -43,10 +48,14 @@ export default function LinksPage() {
         <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[#23282A] dark:text-[#EAE2D0]">
           내 링크
         </h1>
-        <Button className="rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
-          <Plus className="size-4" />
-          링크 저장
-        </Button>
+        <SaveLinkDialog
+          trigger={
+            <Button className="rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
+              <Plus className="size-4" />
+              링크 저장
+            </Button>
+          }
+        />
       </div>
 
       <SearchFilterBar tags={tags} />

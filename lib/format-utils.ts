@@ -23,6 +23,15 @@ export function extractDomain(url: string): string {
   }
 }
 
+export function isValidHttpUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value.trim());
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function parseTags(input: string): string[] {
   const seen = new Set<string>();
   const result: string[] = [];
