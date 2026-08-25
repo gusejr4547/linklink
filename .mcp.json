@@ -11,7 +11,9 @@
         "-y",
         "task-master-ai"
       ],
-      "env": {}
+      "env": {
+        "TASK_MASTER_TOOLS": "standard"
+      }
     }
   }
 }
