@@ -25,7 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isValidHttpUrl, parseTags } from "@/lib/format-utils";
-import { simulateFetchMetadata } from "@/lib/dummy-metadata";
+import { fetchMetadataAction } from "@/lib/actions/metadata";
 import { createLink } from "@/lib/actions/links";
 import type { CreateLinkInput, LinkMetadata } from "@/types/link";
 
@@ -44,6 +44,7 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
   const [urlError, setUrlError] = useState<string | null>(null);
   const [status, setStatus] = useState<FetchStatus>("idle");
   const [metadata, setMetadata] = useState<LinkMetadata | null>(null);
+  const [metadataError, setMetadataError] = useState<string | null>(null);
   const [manualTitle, setManualTitle] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [memo, setMemo] = useState("");
@@ -62,6 +63,7 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
     setUrlError(null);
     setStatus("idle");
     setMetadata(null);
+    setMetadataError(null);
     setManualTitle("");
     setTagsInput("");
     setMemo("");
@@ -77,6 +79,7 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
     if (status !== "idle") {
       setStatus("idle");
       setMetadata(null);
+      setMetadataError(null);
       setManualTitle("");
     }
     if (urlError) setUrlError(null);
@@ -94,12 +97,14 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
     setUrlError(null);
     setStatus("loading");
     setMetadata(null);
+    setMetadataError(null);
     const requestId = fetchIdRef.current + 1;
     fetchIdRef.current = requestId;
-    const result = await simulateFetchMetadata(url);
+    const result = await fetchMetadataAction(url);
     if (fetchIdRef.current !== requestId) return;
-    setStatus(result ? "success" : "error");
-    setMetadata(result);
+    setStatus(result.success ? "success" : "error");
+    setMetadata(result.success ? (result.data ?? null) : null);
+    setMetadataError(result.success ? null : (result.error ?? "메타데이터를 가져올 수 없습니다."));
   }
 
   function handleUrlKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -213,8 +218,8 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
                     미리보기 정보를 가져오지 못했어요
                   </p>
                   <p className="mt-1 text-sm text-destructive">
-                    로그인이 필요하거나 비공개로 설정된 페이지일 수 있어요. 제목을 직접 입력하면 저장할 수
-                    있어요.
+                    {metadataError ?? "로그인이 필요하거나 비공개로 설정된 페이지일 수 있어요."} 제목을
+                    직접 입력하면 저장할 수 있어요.
                   </p>
                 </div>
                 <div className="space-y-1.5">
