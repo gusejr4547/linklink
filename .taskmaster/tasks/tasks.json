@@ -239,11 +239,12 @@
         "dependencies": [
           "9"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 7,
         "recommendedSubtasks": 6,
-        "expansionPrompt": "Structure as: (1) Install open-graph-scraper dependency, (2) Create lib/metadata.ts with fetchLinkMetadata function including URL validation, protocol/hostname checks for SSRF protection (block localhost/127.0.0.1/169.254.169.254), timeout handling with Promise.race, and OG tag parsing from ogs library result, (3) Create lib/actions/metadata.ts with fetchMetadataAction Server Action wrapper, (4) Update components/save-link-dialog.tsx to call fetchMetadataAction on preview button click, handle loading/success/error states with conditional rendering of preview area vs manual input, (5) Update next.config.ts to add images.remotePatterns configuration for external thumbnails (or document decision to use img tag), (6) Test with Playwright MCP covering both successful OG fetch (e.g., github.com) and failed cases (e.g., example.com), plus SSRF protection (localhost URLs should be rejected)."
+        "expansionPrompt": "Structure as: (1) Install open-graph-scraper dependency, (2) Create lib/metadata.ts with fetchLinkMetadata function including URL validation, protocol/hostname checks for SSRF protection (block localhost/127.0.0.1/169.254.169.254), timeout handling with Promise.race, and OG tag parsing from ogs library result, (3) Create lib/actions/metadata.ts with fetchMetadataAction Server Action wrapper, (4) Update components/save-link-dialog.tsx to call fetchMetadataAction on preview button click, handle loading/success/error states with conditional rendering of preview area vs manual input, (5) Update next.config.ts to add images.remotePatterns configuration for external thumbnails (or document decision to use img tag), (6) Test with Playwright MCP covering both successful OG fetch (e.g., github.com) and failed cases (e.g., example.com), plus SSRF protection (localhost URLs should be rejected).",
+        "updatedAt": "2026-08-26T08:00:56.283Z"
       },
       {
         "id": "11",
@@ -456,9 +457,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-26T07:34:21.615Z",
+      "lastModified": "2026-08-26T08:00:56.283Z",
       "taskCount": 18,
-      "completedCount": 10,
+      "completedCount": 11,
       "tags": [
         "master"
       ]

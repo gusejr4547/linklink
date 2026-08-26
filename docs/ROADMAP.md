@@ -148,7 +148,7 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - 저장 중 중복 제출 방지 (pending 상태 버튼 비활성화)
   - 테스트: Playwright MCP로 저장 → 목록 노출 → 삭제 → 목록에서 사라짐 플로우 검증, 잘못된 URL 입력 시 에러 메시지 검증
 
-- **Task 010: F002 메타데이터 자동 수집 구현**
+- ✅ **Task 010: F002 메타데이터 자동 수집 구현**
   - `open-graph-scraper` 설치 및 서버 전용 래퍼 작성 (`lib/metadata.ts`)
   - URL 입력 후 미리보기 요청을 처리하는 Server Action 또는 Route Handler 구현
   - OG `title`/`description`/`image`를 파싱해 미리보기에 반영하고, 저장 시 `title`/`description`/`thumbnail_url`에 기록
