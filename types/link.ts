@@ -1,16 +1,6 @@
-export interface Link {
-  id: string;
-  user_id: string;
-  url: string;
-  title: string;
-  thumbnail_url: string | null;
-  description: string | null;
-  tags: string[];
-  memo: string | null;
-  is_read: boolean;
-  is_favorite: boolean;
-  created_at: string;
-}
+import type { Database } from "./database.types";
+
+export type Link = Database["public"]["Tables"]["links"]["Row"];
 
 export interface CreateLinkInput {
   url: string;
