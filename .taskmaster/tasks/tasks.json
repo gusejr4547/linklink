@@ -256,11 +256,12 @@
         "dependencies": [
           "10"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 5,
         "recommendedSubtasks": 5,
-        "expansionPrompt": "Break into: (1) Enhance lib/format-utils.ts parseTags function with normalization (lowercase, trim, 50-char max length, deduplication), (2) Update components/save-link-dialog.tsx to use parseTags before submitting to createLink and show real-time tag badge preview as user types, (3) Create lib/queries/tags.ts with getUserTags function that queries links table, flattens tags arrays, deduplicates, and sorts, (4) Update components/search-filter-bar.tsx (or make it server component) to fetch and display user's tags in the dropdown, (5) Add tag badge click handler in components/link-card.tsx that updates URL params to filter by clicked tag, and update app/links/page.tsx to read tag from URL params and pass to getLinks filter."
+        "expansionPrompt": "Break into: (1) Enhance lib/format-utils.ts parseTags function with normalization (lowercase, trim, 50-char max length, deduplication), (2) Update components/save-link-dialog.tsx to use parseTags before submitting to createLink and show real-time tag badge preview as user types, (3) Create lib/queries/tags.ts with getUserTags function that queries links table, flattens tags arrays, deduplicates, and sorts, (4) Update components/search-filter-bar.tsx (or make it server component) to fetch and display user's tags in the dropdown, (5) Add tag badge click handler in components/link-card.tsx that updates URL params to filter by clicked tag, and update app/links/page.tsx to read tag from URL params and pass to getLinks filter.",
+        "updatedAt": "2026-08-26T11:14:53.173Z"
       },
       {
         "id": "12",
@@ -457,9 +458,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-26T08:00:56.283Z",
+      "lastModified": "2026-08-26T11:14:53.177Z",
       "taskCount": 18,
-      "completedCount": 11,
+      "completedCount": 12,
       "tags": [
         "master"
       ]
