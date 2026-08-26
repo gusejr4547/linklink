@@ -16,6 +16,7 @@ LinkLink — 흩어진 링크를 한곳에 저장하고 태그·메모·읽음 �
 - `next.config.ts`의 `cacheComponents: true`로 인해 Server Action에서 캐시되지 않은 데이터는 `<Suspense>`로 감싸야 함.
 - `proxy.ts`(루트)가 Next.js 프록시(구 미들웨어) 역할을 하며 `lib/supabase/proxy.ts`의 `updateSession`으로 비로그인 접근을 `/auth/login`으로 리다이렉트함.
 - `.mcp.json`에 Supabase MCP 서버와 `taskmaster-ai` MCP 서버가 연결되어 있고, `.claude/settings.json`에 `playwright` 플러그인이 활성화되어 있음.
+- Supabase Auth의 **Email Confirm(이메일 인증)이 꺼져 있음** — 회원가입 시 실제 이메일을 받아 확인할 필요 없이 가입 즉시 로그인 가능. 관련 플로우 테스트 시 이메일 인증 대기 단계를 넣지 말 것.
 
 ## 커맨드
 
