@@ -5,7 +5,9 @@ import { SearchFilterBar } from "@/components/search-filter-bar";
 import { Button } from "@/components/ui/button";
 import { getLinks } from "@/lib/queries/links";
 import { getUserTags } from "@/lib/queries/tags";
+import type { LinkFilter } from "@/types/link";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 
@@ -16,20 +18,45 @@ const saveLinkTrigger = (
   </Button>
 );
 
+type LinksSearchParams = {
+  q?: string | string[];
+  tag?: string | string[];
+  read?: string | string[];
+  fav?: string | string[];
+};
+
+function toStringParam(value: string | string[] | undefined) {
+  return typeof value === "string" ? value : undefined;
+}
+
 async function LinksContent({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string | string[] }>;
+  searchParams: Promise<LinksSearchParams>;
 }) {
   await connection();
 
   const params = await searchParams;
-  const tag = typeof params.tag === "string" ? params.tag : undefined;
+  const q = toStringParam(params.q);
+  const tag = toStringParam(params.tag);
+  const read = toStringParam(params.read);
+  const fav = toStringParam(params.fav);
 
-  const [{ data: links, error }, tags] = await Promise.all([
-    getLinks(tag ? { selectedTags: [tag] } : undefined),
-    getUserTags(),
-  ]);
+  const filter: LinkFilter = {
+    searchQuery: q?.trim() || undefined,
+    selectedTags: tag ? [tag] : undefined,
+    readStatus: read === "read" || read === "unread" ? read : "all",
+    favoriteOnly: fav === "true",
+  };
+
+  const hasActiveFilters = Boolean(
+    filter.searchQuery ||
+      (filter.selectedTags && filter.selectedTags.length > 0) ||
+      filter.readStatus !== "all" ||
+      filter.favoriteOnly
+  );
+
+  const [{ data: links, error }, tags] = await Promise.all([getLinks(filter), getUserTags()]);
 
   if (error || !links) {
     return (
@@ -47,22 +74,40 @@ async function LinksContent({
       <SearchFilterBar tags={tags} />
 
       {links.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 border border-dashed border-[#C7BC9E] px-6 py-20 text-center dark:border-[#3A413C]">
-          <p className="font-[family-name:var(--font-display)] text-lg text-[#23282A] dark:text-[#EAE2D0]">
-            아직 저장된 링크가 없어요
-          </p>
-          <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
-            나중에 다시 보고 싶은 페이지를 저장해보세요.
-          </p>
-          <SaveLinkDialog
-            trigger={
-              <Button className="mt-2 rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
-                <Plus className="size-4" />
-                링크 저장
-              </Button>
-            }
-          />
-        </div>
+        hasActiveFilters ? (
+          <div className="flex flex-col items-center gap-4 border border-dashed border-[#C7BC9E] px-6 py-20 text-center dark:border-[#3A413C]">
+            <p className="font-[family-name:var(--font-display)] text-lg text-[#23282A] dark:text-[#EAE2D0]">
+              검색 결과가 없어요
+            </p>
+            <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
+              다른 검색어나 필터를 시도해보세요.
+            </p>
+            <Button
+              asChild
+              variant="outline"
+              className="mt-2 rounded-none border-[#23282A] bg-transparent text-[#23282A] hover:bg-[#23282A] hover:text-[#EAE2D0] dark:border-[#EAE2D0] dark:text-[#EAE2D0] dark:hover:bg-[#EAE2D0] dark:hover:text-[#1B1F1C]"
+            >
+              <Link href="/links">필터 초기화</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4 border border-dashed border-[#C7BC9E] px-6 py-20 text-center dark:border-[#3A413C]">
+            <p className="font-[family-name:var(--font-display)] text-lg text-[#23282A] dark:text-[#EAE2D0]">
+              아직 저장된 링크가 없어요
+            </p>
+            <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
+              나중에 다시 보고 싶은 페이지를 저장해보세요.
+            </p>
+            <SaveLinkDialog
+              trigger={
+                <Button className="mt-2 rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]">
+                  <Plus className="size-4" />
+                  링크 저장
+                </Button>
+              }
+            />
+          </div>
+        )
       ) : (
         <LinkList links={links} />
       )}
@@ -73,7 +118,7 @@ async function LinksContent({
 export default function LinksPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string | string[] }>;
+  searchParams: Promise<LinksSearchParams>;
 }) {
   return (
     <div className="flex flex-1 flex-col gap-6">

@@ -19,12 +19,6 @@ export async function getLinks(
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  if (filter?.searchQuery) {
-    query = query.or(
-      `title.ilike.%${filter.searchQuery}%,memo.ilike.%${filter.searchQuery}%`
-    );
-  }
-
   if (filter?.selectedTags && filter.selectedTags.length > 0) {
     query = query.overlaps("tags", filter.selectedTags);
   }
@@ -45,5 +39,17 @@ export async function getLinks(
     return { data: null, error: error.message };
   }
 
-  return { data, error: null };
+  let results: Link[] = data ?? [];
+
+  if (filter?.searchQuery) {
+    const q = filter.searchQuery.toLowerCase();
+    results = results.filter(
+      (link) =>
+        link.title.toLowerCase().includes(q) ||
+        (link.memo?.toLowerCase().includes(q) ?? false) ||
+        link.tags.some((tag) => tag.toLowerCase().includes(q))
+    );
+  }
+
+  return { data: results, error: null };
 }
