@@ -37,8 +37,8 @@ export function parseTags(input: string): string[] {
   const result: string[] = [];
 
   for (const raw of input.split(",")) {
-    const tag = raw.trim();
-    if (tag === "" || seen.has(tag)) continue;
+    const tag = raw.trim().toLowerCase();
+    if (tag === "" || tag.length > 50 || seen.has(tag)) continue;
     seen.add(tag);
     result.push(tag);
   }

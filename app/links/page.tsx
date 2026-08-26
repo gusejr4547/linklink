@@ -4,6 +4,7 @@ import { SaveLinkDialog } from "@/components/save-link-dialog";
 import { SearchFilterBar } from "@/components/search-filter-bar";
 import { Button } from "@/components/ui/button";
 import { getLinks } from "@/lib/queries/links";
+import { getUserTags } from "@/lib/queries/tags";
 import { Plus } from "lucide-react";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -15,10 +16,20 @@ const saveLinkTrigger = (
   </Button>
 );
 
-async function LinksContent() {
+async function LinksContent({
+  searchParams,
+}: {
+  searchParams: Promise<{ tag?: string | string[] }>;
+}) {
   await connection();
 
-  const { data: links, error } = await getLinks();
+  const params = await searchParams;
+  const tag = typeof params.tag === "string" ? params.tag : undefined;
+
+  const [{ data: links, error }, tags] = await Promise.all([
+    getLinks(tag ? { selectedTags: [tag] } : undefined),
+    getUserTags(),
+  ]);
 
   if (error || !links) {
     return (
@@ -30,8 +41,6 @@ async function LinksContent() {
       </div>
     );
   }
-
-  const tags = Array.from(new Set(links.flatMap((link) => link.tags))).sort();
 
   return (
     <>
@@ -61,7 +70,11 @@ async function LinksContent() {
   );
 }
 
-export default function LinksPage() {
+export default function LinksPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tag?: string | string[] }>;
+}) {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
@@ -72,7 +85,7 @@ export default function LinksPage() {
       </div>
 
       <Suspense fallback={<LinkListSkeleton />}>
-        <LinksContent />
+        <LinksContent searchParams={searchParams} />
       </Suspense>
     </div>
   );

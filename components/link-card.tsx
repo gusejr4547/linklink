@@ -17,6 +17,7 @@ import { extractDomain, formatRelativeTime } from "@/lib/format-utils";
 import type { Link as LinkType } from "@/types/link";
 import { BookOpen, Heart, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useTransition, type MouseEvent } from "react";
 import { toast } from "sonner";
 
@@ -91,17 +92,16 @@ export function LinkCard({
 
   const tags = link.tags.length > 0 && (
     <div
-      className={`flex gap-2 ${
-        variant === "list" ? "flex-nowrap overflow-hidden" : "mt-auto flex-wrap pt-2"
-      }`}
+      className={`flex gap-2 ${variant === "list" ? "flex-nowrap overflow-hidden" : "flex-wrap"}`}
     >
       {visibleTags.map((tag) => (
-        <span
+        <Link
           key={tag}
-          className="shrink-0 bg-[#DCE9E4] px-2 py-1 text-xs text-[#0E6B5C] dark:bg-[#16302A] dark:text-[#35C9A8]"
+          href={`/links?tag=${encodeURIComponent(tag)}`}
+          className="shrink-0 bg-[#DCE9E4] px-2 py-1 text-xs text-[#0E6B5C] hover:opacity-80 dark:bg-[#16302A] dark:text-[#35C9A8]"
         >
           #{tag}
-        </span>
+        </Link>
       ))}
       {hiddenTagCount > 0 && (
         <span className="shrink-0 px-2 py-1 text-xs text-[#5B6360] dark:text-[#9BA39A]">
@@ -173,17 +173,19 @@ export function LinkCard({
   if (variant === "list") {
     return (
       <div className="group flex border border-[#23282A] bg-[#EAE2D0] shadow-[3px_3px_0_0_#C7BC9E] transition-transform hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#C7BC9E] dark:border-[#EAE2D0] dark:bg-[#1B1F1C] dark:shadow-[3px_3px_0_0_#3A413C] dark:hover:shadow-[5px_5px_0_0_#3A413C]">
-        <a
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#0E6B5C] dark:focus-visible:outline-[#35C9A8]"
-        >
-          {meta}
-          {title}
-          {memo}
+        <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-4 py-3">
+          <a
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-col gap-1 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#0E6B5C] dark:focus-visible:outline-[#35C9A8]"
+          >
+            {meta}
+            {title}
+            {memo}
+          </a>
           {tags}
-        </a>
+        </div>
         <div className="flex shrink-0 items-center gap-1 border-l border-[#C7BC9E] px-2 dark:border-[#3A413C]">
           {readButton}
           {favoriteButton}
@@ -205,13 +207,14 @@ export function LinkCard({
           {thumbnail}
         </div>
 
-        <div className="flex flex-1 flex-col gap-2 p-4">
+        <div className="flex flex-col gap-2 p-4">
           {meta}
           {title}
           {memo}
-          {tags}
         </div>
       </a>
+
+      {tags && <div className="px-4 pb-2">{tags}</div>}
 
       <div className="flex items-center justify-between border-t border-[#C7BC9E] px-2 py-1 dark:border-[#3A413C]">
         <div className="flex items-center gap-1">
