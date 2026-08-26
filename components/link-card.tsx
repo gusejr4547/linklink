@@ -1,8 +1,24 @@
+"use client";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { deleteLink } from "@/lib/actions/links";
 import { extractDomain, formatRelativeTime } from "@/lib/format-utils";
 import type { Link as LinkType } from "@/types/link";
 import { BookOpen, Heart, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useState, useTransition, type MouseEvent } from "react";
+import { toast } from "sonner";
 
 export function LinkCard({
   link,
@@ -11,7 +27,22 @@ export function LinkCard({
   link: LinkType;
   variant?: "grid" | "list";
 }) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isDeleting, startDeleteTransition] = useTransition();
   const domain = extractDomain(link.url);
+
+  function handleConfirmDelete(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    startDeleteTransition(async () => {
+      const result = await deleteLink(link.id);
+      if (result.success) {
+        toast.success("링크를 삭제했어요.");
+        setDeleteOpen(false);
+      } else {
+        toast.error(result.error ?? "링크 삭제에 실패했습니다.");
+      }
+    });
+  }
 
   const thumbnail = link.thumbnail_url ? (
     <Image
@@ -111,14 +142,32 @@ export function LinkCard({
   );
 
   const deleteButton = (
-    <Button
-      variant="ghost"
-      size="icon-sm"
-      aria-label="삭제"
-      className="rounded-none text-[#5B6360] hover:bg-destructive/10 hover:text-destructive dark:text-[#9BA39A]"
-    >
-      <Trash2 />
-    </Button>
+    <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="삭제"
+          className="rounded-none text-[#5B6360] hover:bg-destructive/10 hover:text-destructive dark:text-[#9BA39A]"
+        >
+          <Trash2 />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>링크를 삭제할까요?</AlertDialogTitle>
+          <AlertDialogDescription>
+            &ldquo;{link.title}&rdquo; 링크를 삭제하면 되돌릴 수 없어요.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting}>
+            {isDeleting ? "삭제 중..." : "삭제"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 
   if (variant === "list") {

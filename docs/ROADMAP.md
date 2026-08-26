@@ -140,7 +140,7 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - `lib/queries/links.ts`에 `getLinks(filter?: LinkFilter)` 작성 — 서버 컴포넌트/액션에서 사용, 검색어·태그·읽음상태·즐겨찾기 필터 지원
   - 테스트: 실제 테스트 계정 2개로 RLS 격리 검증(각 사용자가 본인 링크만 조회됨) 후 정리, `pg_indexes`/`pg_policies`/보안 어드바이저로 스키마 확인, lint·tsc 통과
 
-- **Task 009: F001 링크 저장/삭제 기능 구현**
+- ✅ **Task 009: F001 링크 저장/삭제 기능 구현**
   - `createLink` Server Action 구현: URL 유효성 검사 → 인증 사용자 확인 → insert → `revalidatePath`
   - `deleteLink` Server Action 구현 + 삭제 확인 다이얼로그 연결
   - 링크 목록 페이지를 더미 데이터에서 실제 조회 결과로 교체, 빈 상태 분기 연결

@@ -1,6 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import {
@@ -19,6 +26,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isValidHttpUrl, parseTags } from "@/lib/format-utils";
 import { simulateFetchMetadata } from "@/lib/dummy-metadata";
+import { createLink } from "@/lib/actions/links";
 import type { CreateLinkInput, LinkMetadata } from "@/types/link";
 
 const fieldClass =
@@ -40,12 +48,13 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
   const [tagsInput, setTagsInput] = useState("");
   const [memo, setMemo] = useState("");
   const fetchIdRef = useRef(0);
+  const [isSaving, startSaveTransition] = useTransition();
 
   const tags = useMemo(() => parseTags(tagsInput), [tagsInput]);
 
   const resolvedTitle =
     status === "success" ? (metadata?.title ?? "") : status === "error" ? manualTitle.trim() : "";
-  const canSave = resolvedTitle.length > 0 && status !== "loading";
+  const canSave = resolvedTitle.length > 0 && status !== "loading" && !isSaving;
 
   function resetForm() {
     fetchIdRef.current += 1;
@@ -110,9 +119,15 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
       tags,
       memo: memo.trim() || null,
     };
-    console.log("Saving:", payload);
-    toast.success("링크를 저장했어요.");
-    handleOpenChange(false);
+    startSaveTransition(async () => {
+      const result = await createLink(payload);
+      if (result.success) {
+        toast.success("링크를 저장했어요.");
+        handleOpenChange(false);
+      } else {
+        toast.error(result.error ?? "링크 저장에 실패했습니다.");
+      }
+    });
   }
 
   return (
@@ -273,7 +288,7 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
             disabled={!canSave}
             className="rounded-none bg-[#0E6B5C] text-[#EAE2D0] hover:opacity-90 dark:bg-[#35C9A8] dark:text-[#1B1F1C]"
           >
-            저장
+            {isSaving ? "저장 중..." : "저장"}
           </Button>
         </DialogFooter>
       </DialogContent>
