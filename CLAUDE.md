@@ -20,13 +20,14 @@ LinkLink — 흩어진 링크를 한곳에 저장하고 태그·메모·읽음 �
 ## 커맨드
 
 - `npm run dev` / `npm run build` / `npm run start` / `npm run lint`
-- 별도 테스트 스크립트 없음 — 테스트는 아래 워크플로우의 Playwright MCP 검증으로 대체.
+- 별도 테스트 스크립트 없음 — 코드 레벨 검증(lint·타입체크)과 E2E 검증은 `test-verifier` 서브에이전트(`.claude/agents/test/test-verifier.md`)에 위임한다.
 
 ## 개발 워크플로우 (docs/ROADMAP.md + Taskmaster 기준)
 
 - 작업 목록과 상태는 Taskmaster MCP(`.taskmaster/tasks/tasks.json`)로 관리한다. 새 작업을 시작할 때는 `next_task` 또는 `get_task`로 대상 태스크를 확인하고 `set_task_status`로 `in-progress`로 표시.
 - 각 태스크의 `details`(구현 단계)와 `testStrategy`(검증 방법) 필드를 명세로 삼아 구현한다.
-- **API 연동 및 비즈니스 로직을 구현한 뒤에는 반드시 Playwright MCP로 E2E 테스트를 실행하고 통과를 확인한 후에 다음 단계로 진행할 것.** 임의로 건너뛰지 말 것.
+- **API 연동·비즈니스 로직 또는 사용자가 상호작용하는 UI(신규 컴포넌트·페이지·인터랙션 흐름)를 구현한 뒤에는 반드시 `test-verifier` 서브에이전트를 호출해 검증(lint·타입체크 + Playwright MCP E2E)을 위임하고, 그 리포트가 통과일 때만 다음 단계로 진행할 것.** 메인 세션이 직접 Playwright MCP를 호출하지 말고 위임할 것. 단순 스타일·텍스트 수정처럼 상호작용이 없는 변경에는 적용하지 않는다. 임의로 건너뛰지 말 것.
+- `test-verifier`는 코드를 수정하지 않고 `set_task_status`도 호출하지 않는다 — 검증 결과는 `update_subtask`로 기록만 남긴다. 완료 판정(`done` 처리)은 검증 통과를 확인한 메인 세션의 몫이다.
 - 진행 중 특이사항이나 발견 사항은 `update_subtask`(서브태스크가 있는 경우)로 기록한다.
 - 태스크 완료 시 `set_task_status`로 `done` 표시하고, `docs/ROADMAP.md`의 해당 항목도 ✅로 동기화한다.
 - 각 단계 완료 후에는 중단하고 사용자의 추가 지시를 기다릴 것 — 다음 단계로 자동으로 이어가지 말 것.
