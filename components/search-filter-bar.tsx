@@ -10,9 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Heart, RotateCcw, Search } from "lucide-react";
-
-const fieldClass =
-  "rounded-none border-[#23282A] bg-transparent text-[#23282A] placeholder:text-[#5B6360] focus-visible:ring-0 focus-visible:border-[#0E6B5C] dark:border-[#EAE2D0] dark:text-[#EAE2D0] dark:placeholder:text-[#9BA39A] dark:focus-visible:border-[#35C9A8] dark:bg-transparent";
+import { fieldClass } from "@/lib/ui-classes";
 
 export function SearchFilterBar({ tags }: { tags: string[] }) {
   return (

@@ -27,10 +27,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { isValidHttpUrl, parseTags } from "@/lib/format-utils";
 import { fetchMetadataAction } from "@/lib/actions/metadata";
 import { createLink } from "@/lib/actions/links";
+import { fieldClass } from "@/lib/ui-classes";
 import type { CreateLinkInput, LinkMetadata } from "@/types/link";
-
-const fieldClass =
-  "rounded-none border-[#23282A] bg-transparent text-[#23282A] placeholder:text-[#5B6360] focus-visible:ring-0 focus-visible:border-[#0E6B5C] dark:border-[#EAE2D0] dark:text-[#EAE2D0] dark:placeholder:text-[#9BA39A] dark:focus-visible:border-[#35C9A8] dark:bg-transparent";
 
 type FetchStatus = "idle" | "loading" | "success" | "error";
 

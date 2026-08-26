@@ -1,5 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Suspense } from "react";
+import { authCardClass } from "@/lib/ui-classes";
 
 async function ErrorContent({
   searchParams,
@@ -9,17 +15,11 @@ async function ErrorContent({
   const params = await searchParams;
 
   return (
-    <>
-      {params?.error ? (
-        <p className="text-sm text-muted-foreground">
-          Code error: {params.error}
-        </p>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          An unspecified error occurred.
-        </p>
-      )}
-    </>
+    <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
+      {params?.error
+        ? `오류 코드: ${params.error}`
+        : "알 수 없는 오류가 발생했습니다."}
+    </p>
   );
 }
 
@@ -29,23 +29,19 @@ export default function Page({
   searchParams: Promise<{ error: string }>;
 }) {
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                Sorry, something went wrong.
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Suspense>
-                <ErrorContent searchParams={searchParams} />
-              </Suspense>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+    <div className="flex flex-col gap-6">
+      <Card className={authCardClass}>
+        <CardHeader>
+          <CardTitle className="font-[family-name:var(--font-display)] text-2xl text-[#23282A] dark:text-[#EAE2D0]">
+            문제가 발생했습니다
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Suspense>
+            <ErrorContent searchParams={searchParams} />
+          </Suspense>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  authCardClass,
+  authLinkClass,
+  fieldClass,
+  primaryButtonClass,
+} from "@/lib/ui-classes";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -38,7 +44,9 @@ export function ForgotPasswordForm({
       if (error) throw error;
       setSuccess(true);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      setError(
+        error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -47,53 +55,65 @@ export function ForgotPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {success ? (
-        <Card>
+        <Card className={authCardClass}>
           <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
+            <CardTitle className="font-[family-name:var(--font-display)] text-2xl text-[#23282A] dark:text-[#EAE2D0]">
+              이메일을 확인해주세요
+            </CardTitle>
+            <CardDescription className="text-[#5B6360] dark:text-[#9BA39A]">
+              비밀번호 재설정 안내를 보냈어요
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive
-              a password reset email.
+            <p className="text-sm text-[#5B6360] dark:text-[#9BA39A]">
+              가입하신 이메일과 비밀번호를 사용 중이시라면, 비밀번호 재설정
+              이메일을 받으실 수 있어요.
             </p>
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className={authCardClass}>
           <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-            <CardDescription>
-              Type in your email and we&apos;ll send you a link to reset your
-              password
+            <CardTitle className="font-[family-name:var(--font-display)] text-2xl text-[#23282A] dark:text-[#EAE2D0]">
+              비밀번호 재설정
+            </CardTitle>
+            <CardDescription className="text-[#5B6360] dark:text-[#9BA39A]">
+              이메일을 입력하시면 비밀번호 재설정 링크를 보내드릴게요
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleForgotPassword}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label
+                    htmlFor="email"
+                    className="text-[#23282A] dark:text-[#EAE2D0]"
+                  >
+                    이메일
+                  </Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="you@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className={fieldClass}
                   />
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send reset email"}
+                {error && <p className="text-sm text-destructive">{error}</p>}
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className={cn("w-full", primaryButtonClass)}
+                >
+                  {isLoading ? "보내는 중..." : "재설정 이메일 보내기"}
                 </Button>
               </div>
-              <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
-                <Link
-                  href="/auth/login"
-                  className="underline underline-offset-4"
-                >
-                  Login
+              <div className="mt-4 text-center text-sm text-[#5B6360] dark:text-[#9BA39A]">
+                계정이 있으신가요?{" "}
+                <Link href="/auth/login" className={authLinkClass}>
+                  로그인
                 </Link>
               </div>
             </form>
