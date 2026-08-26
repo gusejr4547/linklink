@@ -81,7 +81,10 @@ export function SearchFilterBar({ tags }: { tags: string[] }) {
         <SelectTrigger className={`${fieldClass} w-full md:w-[140px]`}>
           <SelectValue placeholder="태그" />
         </SelectTrigger>
-        <SelectContent className="rounded-none border-[#23282A] bg-[#EAE2D0] text-[#23282A] dark:border-[#EAE2D0] dark:bg-[#1B1F1C] dark:text-[#EAE2D0]">
+        <SelectContent
+          position="popper"
+          className="rounded-none border-[#23282A] bg-[#EAE2D0] text-[#23282A] dark:border-[#EAE2D0] dark:bg-[#1B1F1C] dark:text-[#EAE2D0]"
+        >
           <SelectItem value={ALL_TAGS}>전체 태그</SelectItem>
           {tags.map((tag) => (
             <SelectItem key={tag} value={tag}>
@@ -95,7 +98,10 @@ export function SearchFilterBar({ tags }: { tags: string[] }) {
         <SelectTrigger className={`${fieldClass} w-full md:w-[120px]`}>
           <SelectValue placeholder="읽음 상태" />
         </SelectTrigger>
-        <SelectContent className="rounded-none border-[#23282A] bg-[#EAE2D0] text-[#23282A] dark:border-[#EAE2D0] dark:bg-[#1B1F1C] dark:text-[#EAE2D0]">
+        <SelectContent
+          position="popper"
+          className="rounded-none border-[#23282A] bg-[#EAE2D0] text-[#23282A] dark:border-[#EAE2D0] dark:bg-[#1B1F1C] dark:text-[#EAE2D0]"
+        >
           <SelectItem value="all">전체</SelectItem>
           <SelectItem value="read">읽음</SelectItem>
           <SelectItem value="unread">안읽음</SelectItem>
