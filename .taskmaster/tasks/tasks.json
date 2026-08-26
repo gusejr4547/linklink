@@ -290,7 +290,7 @@
         "dependencies": [
           "12"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -298,19 +298,21 @@
             "description": "Install the use-debounce npm package required for debounced search input handling in the search filter bar component.",
             "dependencies": [],
             "details": "Run `npm install use-debounce` to add the dependency. This package provides the useDebouncedCallback hook that will be used to prevent excessive search queries while the user is typing. Verify installation by checking package.json and ensuring the package is listed in dependencies.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify package.json contains use-debounce in dependencies. Run `npm list use-debounce` to confirm successful installation.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:27:30.445Z"
           },
           {
             "id": 2,
             "title": "Enhance getLinks function in lib/queries/links.ts with full filtering support",
             "description": "Update the getLinks function to support text search across title/memo/tags, tag array intersection, read status filtering, and favorite filtering using Postgres operators.",
             "dependencies": [],
-            "details": "Modify lib/queries/links.ts getLinks function to accept optional LinkFilter parameter. Implement text search using Postgres ilike operator for title and memo, and array contains operator (cs.{}) for tags with OR logic. Add tag intersection filter using contains operator for selectedTags array. Add read status filter with eq(true/false) based on readStatus value ('read'/'unread'/'all'). Add favorite filter using eq(true) when favoriteOnly is true. Maintain existing order by created_at descending. Handle edge cases: empty filters, null values, special characters in search query.",
-            "status": "pending",
+            "details": "Modify lib/queries/links.ts getLinks function to accept optional LinkFilter parameter. Implement text search using Postgres ilike operator for title and memo, and array contains operator (cs.{}) for tags with OR logic. Add tag intersection filter using contains operator for selectedTags array. Add read status filter with eq(true/false) based on readStatus value ('read'/'unread'/'all'). Add favorite filter using eq(true) when favoriteOnly is true. Maintain existing order by created_at descending. Handle edge cases: empty filters, null values, special characters in search query.\n<info added on 2026-08-26T12:28:22.484Z>\nI need to analyze the codebase to understand the current implementation of the `getLinks` function before generating the update.Based on my analysis of the codebase, I can see that the implementation has been completed exactly as described in the user request. The `getLinks` function in `lib/queries/links.ts` (lines 4-55) implements the hybrid filtering approach:\n\n1. **DB-level filtering** (lines 22-34): Uses PostgREST operators for `selectedTags` (overlaps), `readStatus` (eq), and `favoriteOnly` (eq)\n2. **Application-level filtering** (lines 44-52): Implements `searchQuery` with case-insensitive partial matching across title, memo, and tags array elements using JavaScript's `includes()` method\n\nThe implementation correctly addresses the PostgREST limitation where array column filtering only supports exact value matching, not substring searches within array elements.\n\nHere is the new text to append:\n\nImplementation verified at lib/queries/links.ts:4-55. DB-level filters applied via Supabase query builder (overlaps for selectedTags, eq for readStatus/favoriteOnly). searchQuery filtering moved to application layer using JavaScript filter with toLowerCase().includes() for title/memo and tags.some() for partial tag matching. All filters combined with AND logic. Solution is appropriate for personal-use scale with minimal performance impact.\n</info added on 2026-08-26T12:28:22.484Z>",
+            "status": "done",
             "testStrategy": "Write unit-style tests using mcp__supabase__execute_sql to insert test data with various combinations of title/memo/tags/is_read/is_favorite, then verify getLinks returns correct results for each filter type individually and in combination.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:28:27.052Z"
           },
           {
             "id": 3,
@@ -320,9 +322,10 @@
               1
             ],
             "details": "Create components/search-filter-bar.tsx as 'use client' component. Import useRouter, useSearchParams, useTransition from next/navigation. Accept availableTags prop (string[]). Read initial state from searchParams: q (search query), tag (selected tag), read (read status: all/read/unread), fav (favorite boolean). Implement updateParams helper function that creates new URLSearchParams, applies updates, removes empty/null/'all' values, and uses startTransition with router.push (scroll: false). Use local state for searchQuery to provide immediate feedback before debounce completes. Render Input for search, Select for tag dropdown, Select for read status, Button for favorite toggle (variant changes based on state), and reset Button that clears all params.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Manual testing: verify component renders without errors, dropdowns populate with correct options, buttons respond to clicks. URL state sync will be tested in integration phase.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:28:54.769Z"
           },
           {
             "id": 4,
@@ -332,9 +335,10 @@
               3
             ],
             "details": "Import useDebouncedCallback from use-debounce package. Create debouncedSearch callback with 500ms delay that calls updateParams({ q: value }). Implement handleSearchChange that updates local searchQuery state immediately (for instant UI feedback) and triggers debouncedSearch. Connect handleSearchChange to Input component's onChange event. Ensure searchQuery state initializes from searchParams.get('q') on mount to preserve state on navigation.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Playwright MCP test: type 'react' into search input, verify URL does NOT update immediately, wait 500ms, verify URL contains ?q=react. Type additional characters and verify debounce resets (only final value appears in URL after 500ms of no typing).",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:29:02.817Z"
           },
           {
             "id": 5,
@@ -344,9 +348,10 @@
               3
             ],
             "details": "Wire tag Select to call updateParams({ tag: value }) on change, with empty string option for 'all tags'. Wire read status Select to call updateParams({ read: value }) on change, with options 'all'/'read'/'unread'. Wire favorite Button to toggle between updateParams({ fav: 'true' }) and updateParams({ fav: null }), changing variant between 'default' and 'outline' based on favoriteOnly state. Implement handleReset that calls router.push('/links') to clear all query params. Add loading indicators during isPending transitions if needed.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Playwright MCP test: select tag from dropdown, verify ?tag=value in URL. Select 'read' status, verify ?read=read. Click favorite button, verify ?fav=true and button style changes. Click reset button, verify URL returns to /links with no params and all filters clear.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:29:10.869Z"
           },
           {
             "id": 6,
@@ -357,9 +362,10 @@
               5
             ],
             "details": "Update app/links/page.tsx to accept searchParams prop (Next.js App Router convention). Extract q, tag, read, fav from searchParams. Construct LinkFilter object: { searchQuery: q || undefined, selectedTags: tag ? [tag] : undefined, readStatus: read as 'all'|'read'|'unread' || 'all', favoriteOnly: fav === 'true' }. Pass filter to getLinks(filter). Extract availableTags from returned links using Array.from(new Set(links.flatMap(link => link.tags))).sort(). Render SearchFilterBar with availableTags prop. Pass filtered links to existing link card grid. Preserve existing loading/error states.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Playwright MCP test: navigate to /links?q=test&tag=nextjs&read=read&fav=true, verify SearchFilterBar displays correct selected values, verify only links matching ALL criteria are displayed. Test with no results scenario.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:30:49.236Z"
           },
           {
             "id": 7,
@@ -368,15 +374,17 @@
             "dependencies": [
               6
             ],
-            "details": "Add empty result state UI in app/links/page.tsx: detect when links.length === 0 AND any filter is active (searchParams has q/tag/read/fav), show message '검색 결과가 없습니다' with reset button. Run comprehensive Playwright MCP tests: (1) Text search: type 'react', wait 500ms, verify URL ?q=react, verify filtered results. (2) Tag filter: select tag, verify URL and results. (3) Read status: select read/unread, verify filtering. (4) Favorite: toggle, verify filtering. (5) Combined filters: apply search + tag + read + favorite simultaneously, verify AND logic. (6) URL persistence: refresh page, verify filters persist. (7) Browser back/forward: apply filters, navigate away, use back button, verify filters restore. (8) Reset: click reset, verify all filters clear and URL returns to /links. (9) Empty results: create filter combination with no matches, verify empty state displays. (10) Special characters: search for terms with quotes/slashes/unicode, verify no errors.",
-            "status": "pending",
+            "details": "Add empty result state UI in app/links/page.tsx: detect when links.length === 0 AND any filter is active (searchParams has q/tag/read/fav), show message '검색 결과가 없습니다' with reset button. Run comprehensive Playwright MCP tests: (1) Text search: type 'react', wait 500ms, verify URL ?q=react, verify filtered results. (2) Tag filter: select tag, verify URL and results. (3) Read status: select read/unread, verify filtering. (4) Favorite: toggle, verify filtering. (5) Combined filters: apply search + tag + read + favorite simultaneously, verify AND logic. (6) URL persistence: refresh page, verify filters persist. (7) Browser back/forward: apply filters, navigate away, use back button, verify filters restore. (8) Reset: click reset, verify all filters clear and URL returns to /links. (9) Empty results: create filter combination with no matches, verify empty state displays. (10) Special characters: search for terms with quotes/slashes/unicode, verify no errors.\n<info added on 2026-08-26T12:42:53.022Z>\nI'll analyze the codebase to understand the current implementation and verify the test results mentioned in the user request.Based on my analysis of the codebase and the comprehensive test verification report provided, here is the update text:\n\nE2E verification completed (2026-08-26) by test-verifier agent. All 10 test scenarios passed: text search with debounce (500ms confirmed via useDebouncedCallback implementation in search-filter-bar.tsx:53-55), tag filtering, read status filtering, favorite filtering, combined AND filters (q+tag+read+fav → 1 result), filter reset (both button and link), empty result state UI display, URL persistence across refresh, browser back/forward navigation, and special character search (quotes/slashes/unicode). Code-level validation (lint, TypeScript) passed with no errors. Console monitoring showed no new errors during test execution; pre-existing logs (useEffect ReferenceError, auth token 400) confirmed as stale HMR artifacts not present in current source. Implementation verified against app/links/page.tsx:76-92 (empty state conditional rendering), components/search-filter-bar.tsx:53-59 (debounced search), lib/queries/links.ts:22-52 (server-side filtering with client-side text search). No defects found. Ready for task completion.\n</info added on 2026-08-26T12:42:53.022Z>",
+            "status": "done",
             "testStrategy": "## 테스트 체크리스트 (Playwright MCP)\n\n1. 텍스트 검색: 검색창에 'react' 입력 → 500ms 대기 → URL에 ?q=react 확인 → 제목/메모/태그에 'react' 포함된 링크만 표시\n2. 태그 필터: 드롭다운에서 'nextjs' 선택 → URL에 ?tag=nextjs → nextjs 태그 링크만 표시\n3. 읽음 상태: '읽음' 선택 → ?read=read → 읽음 링크만 표시\n4. 즐겨찾기: 버튼 클릭 → ?fav=true → 즐겨찾기 링크만 표시\n5. 복합 필터: search + tag + read + favorite 동시 적용 → AND 로직 검증\n6. URL 지속성: 필터 적용 후 새로고침 → 필터 상태 유지 확인\n7. 뒤로가기: 필터 적용 → 다른 페이지 이동 → 뒤로가기 → 필터 복원 확인\n8. 초기화: 필터 적용 후 초기화 버튼 → 모든 필터 제거 및 /links로 복귀\n9. 빈 결과: 매칭 없는 필터 조합 → 빈 상태 UI 표시 확인\n10. 특수문자: 따옴표/슬래시/유니코드 검색 → 에러 없이 처리",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-08-26T12:43:19.244Z"
           }
         ],
         "complexity": 8,
         "recommendedSubtasks": 7,
-        "expansionPrompt": "Structure as: (1) Enhance lib/queries/links.ts getLinks function to support full LinkFilter interface with text search across title/memo/tags (using Postgres ilike and array operators), tag array intersection (contains), read status (eq true/false), and favorite (eq true), (2) Install use-debounce dependency, (3) Convert components/search-filter-bar.tsx to client component with useRouter, useSearchParams, and useTransition for navigation, (4) Implement debounced search input with useDebouncedCallback (500ms), (5) Implement select dropdowns for tags and read status, favorite toggle button, and reset button that clears all params, (6) Update app/links/page.tsx to read all searchParams, construct LinkFilter object, pass to getLinks, and pass availableTags to SearchFilterBar, (7) Add empty search result state UI and test full filter combinations with Playwright MCP (search + tag + read + favorite, URL persistence, back button, filter reset)."
+        "expansionPrompt": "Structure as: (1) Enhance lib/queries/links.ts getLinks function to support full LinkFilter interface with text search across title/memo/tags (using Postgres ilike and array operators), tag array intersection (contains), read status (eq true/false), and favorite (eq true), (2) Install use-debounce dependency, (3) Convert components/search-filter-bar.tsx to client component with useRouter, useSearchParams, and useTransition for navigation, (4) Implement debounced search input with useDebouncedCallback (500ms), (5) Implement select dropdowns for tags and read status, favorite toggle button, and reset button that clears all params, (6) Update app/links/page.tsx to read all searchParams, construct LinkFilter object, pass to getLinks, and pass availableTags to SearchFilterBar, (7) Add empty search result state UI and test full filter combinations with Playwright MCP (search + tag + read + favorite, URL persistence, back button, filter reset).",
+        "updatedAt": "2026-08-26T12:43:19.244Z"
       },
       {
         "id": "14",
@@ -459,9 +467,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-26T11:54:13.002Z",
+      "lastModified": "2026-08-26T12:43:19.244Z",
       "taskCount": 18,
-      "completedCount": 13,
+      "completedCount": 14,
       "tags": [
         "master"
       ]
