@@ -72,3 +72,57 @@ export async function deleteLink(id: string): Promise<ActionResult> {
   revalidatePath("/links");
   return { success: true };
 }
+
+export async function toggleRead(
+  id: string,
+  currentState: boolean
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "로그인이 필요합니다." };
+  }
+
+  const { error } = await supabase
+    .from("links")
+    .update({ is_read: !currentState })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { success: false, error: "읽음 상태 변경에 실패했습니다." };
+  }
+
+  revalidatePath("/links");
+  return { success: true };
+}
+
+export async function toggleFavorite(
+  id: string,
+  currentState: boolean
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "로그인이 필요합니다." };
+  }
+
+  const { error } = await supabase
+    .from("links")
+    .update({ is_favorite: !currentState })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { success: false, error: "즐겨찾기 변경에 실패했습니다." };
+  }
+
+  revalidatePath("/links");
+  return { success: true };
+}

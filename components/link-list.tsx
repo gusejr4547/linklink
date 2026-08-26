@@ -2,18 +2,64 @@
 
 import { LinkCard } from "@/components/link-card";
 import { Button } from "@/components/ui/button";
+import { toggleFavorite, toggleRead } from "@/lib/actions/links";
 import type { Link } from "@/types/link";
 import { LayoutGrid, List as ListIcon } from "lucide-react";
-import { useState } from "react";
+import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
+
+type OptimisticUpdate = {
+  id: string;
+  field: "is_read" | "is_favorite";
+  value: boolean;
+};
 
 export function LinkList({ links }: { links: Link[] }) {
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [, startTransition] = useTransition();
+  const [optimisticLinks, setOptimisticLinks] = useOptimistic(
+    links,
+    (state: Link[], update: OptimisticUpdate) =>
+      state.map((link) =>
+        link.id === update.id ? { ...link, [update.field]: update.value } : link
+      )
+  );
+
+  function handleToggleRead(link: Link) {
+    const nextValue = !link.is_read;
+    startTransition(async () => {
+      setOptimisticLinks({ id: link.id, field: "is_read", value: nextValue });
+      try {
+        const result = await toggleRead(link.id, link.is_read);
+        if (!result.success) {
+          toast.error(result.error ?? "읽음 상태 변경에 실패했습니다.");
+        }
+      } catch {
+        toast.error("읽음 상태 변경에 실패했습니다.");
+      }
+    });
+  }
+
+  function handleToggleFavorite(link: Link) {
+    const nextValue = !link.is_favorite;
+    startTransition(async () => {
+      setOptimisticLinks({ id: link.id, field: "is_favorite", value: nextValue });
+      try {
+        const result = await toggleFavorite(link.id, link.is_favorite);
+        if (!result.success) {
+          toast.error(result.error ?? "즐겨찾기 변경에 실패했습니다.");
+        }
+      } catch {
+        toast.error("즐겨찾기 변경에 실패했습니다.");
+      }
+    });
+  }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <span className="font-[family-name:var(--font-mono)] text-xs text-[#5B6360] dark:text-[#9BA39A]">
-          {links.length}개의 링크
+          {optimisticLinks.length}개의 링크
         </span>
         <div className="flex border border-[#23282A] dark:border-[#EAE2D0]">
           <Button
@@ -54,8 +100,14 @@ export function LinkList({ links }: { links: Link[] }) {
             : "flex flex-col gap-3"
         }
       >
-        {links.map((link) => (
-          <LinkCard key={link.id} link={link} variant={view} />
+        {optimisticLinks.map((link) => (
+          <LinkCard
+            key={link.id}
+            link={link}
+            variant={view}
+            onToggleRead={() => handleToggleRead(link)}
+            onToggleFavorite={() => handleToggleFavorite(link)}
+          />
         ))}
       </div>
     </div>

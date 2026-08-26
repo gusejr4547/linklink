@@ -24,9 +24,13 @@ import { toast } from "sonner";
 export function LinkCard({
   link,
   variant = "grid",
+  onToggleRead,
+  onToggleFavorite,
 }: {
   link: LinkType;
   variant?: "grid" | "list";
+  onToggleRead: () => void;
+  onToggleFavorite: () => void;
 }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isDeleting, startDeleteTransition] = useTransition();
@@ -115,7 +119,9 @@ export function LinkCard({
     <Button
       variant="ghost"
       size="icon-sm"
-      aria-label="읽음으로 표시"
+      aria-label={link.is_read ? "읽음 취소" : "읽음으로 표시"}
+      aria-pressed={link.is_read}
+      onClick={onToggleRead}
       className={`rounded-none hover:bg-[#DCE9E4] dark:hover:bg-[#16302A] ${
         link.is_read
           ? "bg-[#DCE9E4] text-[#0E6B5C] dark:bg-[#16302A] dark:text-[#35C9A8]"
@@ -130,7 +136,9 @@ export function LinkCard({
     <Button
       variant="ghost"
       size="icon-sm"
-      aria-label="즐겨찾기 토글"
+      aria-label={link.is_favorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+      aria-pressed={link.is_favorite}
+      onClick={onToggleFavorite}
       className={`rounded-none hover:bg-[#F1E1DB] dark:hover:bg-[#3A2119] ${
         link.is_favorite
           ? "bg-[#F1E1DB] text-[#B5533C] dark:bg-[#3A2119] dark:text-[#E08A6C]"
