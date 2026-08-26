@@ -25,13 +25,14 @@ CREATE TABLE public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name TEXT,
   avatar_url TEXT,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE FUNCTION public.handle_profiles_updated_at()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SET search_path = ''
 AS $$
 BEGIN
   NEW.updated_at = now();
@@ -65,10 +66,15 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
+-- SECURITY DEFINER 함수는 기본적으로 PUBLIC에 EXECUTE 권한이 부여되어
+-- anon/authenticated가 PostgREST RPC(/rest/v1/rpc/handle_new_user)로 직접 호출할 수 있다.
+-- 이 함수는 트리거 전용이므로(트리거 실행은 EXECUTE 권한과 무관하게 동작) 회수한다.
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC;
+
 -- RLS: LinkLink는 1인 개인용 서비스이므로 공식 예시의 anon SELECT 권한은 부여하지 않고
 -- 본인 행만 select/update 가능하도록 제한한다(row 생성은 트리거가, 삭제는 auth.users의
--- ON DELETE CASCADE가 담당하므로 insert/delete 정책은 두지 않는다). 실제 적용은 Task 008에서 수행한다.
--- ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
--- CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
--- CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+-- ON DELETE CASCADE가 담당하므로 insert/delete 정책은 두지 않는다).
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
 `;

@@ -140,6 +140,14 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - `lib/queries/links.ts`에 `getLinks(filter?: LinkFilter)` 작성 — 서버 컴포넌트/액션에서 사용, 검색어·태그·읽음상태·즐겨찾기 필터 지원
   - 테스트: 실제 테스트 계정 2개로 RLS 격리 검증(각 사용자가 본인 링크만 조회됨) 후 정리, `pg_indexes`/`pg_policies`/보안 어드바이저로 스키마 확인, lint·tsc 통과
 
+- ✅ **Task 008-1: profiles 테이블 및 사용자 데이터 동기화 트리거 마이그레이션 적용**
+  - Task 003-1에서 설계만 해두었던 `PROFILES_TABLE_DDL`(`types/database.ts`)을 실제 Supabase 마이그레이션으로 적용: `public.profiles` 테이블, `updated_at` 자동 갱신 트리거, `auth.users` insert 시 자동 동기화하는 `handle_new_user()` SECURITY DEFINER 트리거
+  - RLS 활성화 및 본인 행만 select/update 가능한 정책 2종 적용(anon SELECT 권한·insert/delete 정책 없음, 설계대로)
+  - `get_advisors` 보안 경고 대응: `handle_profiles_updated_at`에 `search_path` 고정, `handle_new_user()`의 PUBLIC EXECUTE 권한 회수(PostgREST RPC로 직접 호출되는 것 차단 — 트리거 실행 자체에는 영향 없음)
+  - 초안에 누락되어 있던 `created_at`/`updated_at` `NOT NULL` 제약 추가(links 테이블 컨벤션 및 `Profile` 타입과 정합성 확보)
+  - `types/database.types.ts` 재생성, `types/database.ts`의 DDL 주석을 실제 적용된 SQL과 동기화
+  - 테스트: test-verifier로 실제 회원가입 E2E 검증(가입 즉시 `/links` 접근 가능 = 세션 발급 확인) 후, 메인 세션이 `execute_sql`로 해당 사용자의 `profiles` 행 자동 생성(`display_name`/`avatar_url` null) 및 `updated_at` 자동 갱신 확인, 테스트 계정 삭제 시 `profiles` 행도 `ON DELETE CASCADE`로 함께 삭제됨을 확인 후 정리
+
 - ✅ **Task 009: F001 링크 저장/삭제 기능 구현**
   - `createLink` Server Action 구현: URL 유효성 검사 → 인증 사용자 확인 → insert → `revalidatePath`
   - `deleteLink` Server Action 구현 + 삭제 확인 다이얼로그 연결
@@ -178,7 +186,7 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - 필터 전체 초기화 동작 제공
   - 테스트: Playwright MCP로 검색어+태그+읽음상태 조합 필터 결과 정확성, 결과 0건 상태, 필터 초기화 검증
 
-- **Task 013-1: 핵심 기능 통합 테스트**
+- ✅ **Task 013-1: 핵심 기능 통합 테스트**
   - Playwright MCP로 전체 사용자 여정 E2E 검증: 회원가입 → 로그인 → 빈 상태 → 저장 → 검색·필터 → 토글 → 삭제 → 로그아웃
   - 비로그인 상태에서 링크 목록 직접 접근 시 로그인 리다이렉트 확인
   - 엣지 케이스 점검: 매우 긴 제목/URL, 썸네일 로드 실패, 태그 0개, 메모 미입력, 특수문자 검색어
