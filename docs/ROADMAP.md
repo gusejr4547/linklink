@@ -132,13 +132,13 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
 
 더미 데이터를 실제 Supabase 데이터로 교체하며 기능을 하나씩 연결합니다. 의존성 순서상 스키마가 가장 먼저, 검색·필터가 마지막입니다.
 
-- **Task 008: links 테이블 및 데이터 액세스 레이어 구축**
-  - Supabase 마이그레이션으로 `links` 테이블 생성 (PK `id` uuid, `user_id` → `auth.users.id` FK, `tags` text[], `is_read`/`is_favorite` boolean default false, `created_at` timestamptz default now())
-  - RLS 활성화 및 기본 정책 적용: 본인 `user_id` 행에 대해서만 select/insert/update/delete 허용
-  - 목록 조회 성능을 위한 인덱스 추가 (`user_id`, `created_at`), 태그 필터용 GIN 인덱스 검토
-  - Supabase 타입 생성 후 Task 003의 `Link` 타입과 정합성 정렬
-  - 조회 함수 작성: `getLinks(userId, filter)` — 서버 컴포넌트에서 사용
-  - 테스트: 다른 사용자 데이터가 조회되지 않는지 RLS 동작 검증
+- ✅ **Task 008: links 테이블 및 데이터 액세스 레이어 구축**
+  - Supabase 마이그레이션(`create_links_table`)으로 `links` 테이블 생성 (PK `id` uuid, `user_id` → `auth.users.id` FK, `tags` text[] not null default '{}', `is_read`/`is_favorite` boolean not null default false, `created_at` timestamptz not null default now())
+  - RLS 활성화 및 기본 정책 4종 적용: 본인 `user_id` 행에 대해서만 select/insert/update/delete 허용
+  - 인덱스 3종 추가: `idx_links_user_id`, `idx_links_created_at`(DESC), `idx_links_tags`(GIN)
+  - `types/database.types.ts` 생성 후 `types/link.ts`의 `Link` 타입을 `Database["public"]["Tables"]["links"]["Row"]`에서 파생하도록 정렬
+  - `lib/queries/links.ts`에 `getLinks(filter?: LinkFilter)` 작성 — 서버 컴포넌트/액션에서 사용, 검색어·태그·읽음상태·즐겨찾기 필터 지원
+  - 테스트: 실제 테스트 계정 2개로 RLS 격리 검증(각 사용자가 본인 링크만 조회됨) 후 정리, `pg_indexes`/`pg_policies`/보안 어드바이저로 스키마 확인, lint·tsc 통과
 
 - **Task 009: F001 링크 저장/삭제 기능 구현**
   - `createLink` Server Action 구현: URL 유효성 검사 → 인증 사용자 확인 → insert → `revalidatePath`

@@ -119,11 +119,12 @@
         "dependencies": [
           "7"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 7,
         "recommendedSubtasks": 6,
-        "expansionPrompt": "Break into: (1) Apply Supabase migration via mcp__supabase__apply_migration to create links table with all fields, FK to auth.users, and default values, (2) Add RLS policies (enable RLS, create 4 policies for select/insert/update/delete restricted to auth.uid() = user_id), (3) Create performance indexes (user_id, created_at DESC, GIN on tags array), (4) Generate TypeScript types using mcp__supabase__generate_typescript_types and save to types/database.types.ts, (5) Align types/link.ts interface with generated types to ensure consistency, (6) Implement lib/queries/links.ts with getLinks function including basic filter support (search, tags, read status, favorite), and test RLS with 2 test users to verify isolation."
+        "expansionPrompt": "Break into: (1) Apply Supabase migration via mcp__supabase__apply_migration to create links table with all fields, FK to auth.users, and default values, (2) Add RLS policies (enable RLS, create 4 policies for select/insert/update/delete restricted to auth.uid() = user_id), (3) Create performance indexes (user_id, created_at DESC, GIN on tags array), (4) Generate TypeScript types using mcp__supabase__generate_typescript_types and save to types/database.types.ts, (5) Align types/link.ts interface with generated types to ensure consistency, (6) Implement lib/queries/links.ts with getLinks function including basic filter support (search, tags, read status, favorite), and test RLS with 2 test users to verify isolation.",
+        "updatedAt": "2026-08-26T06:42:20.410Z"
       },
       {
         "id": "9",
@@ -454,9 +455,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-25T17:11:12.287Z",
+      "lastModified": "2026-08-26T06:42:20.410Z",
       "taskCount": 18,
-      "completedCount": 8,
+      "completedCount": 9,
       "tags": [
         "master"
       ]
