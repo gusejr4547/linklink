@@ -273,11 +273,12 @@
         "dependencies": [
           "11"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 6,
         "recommendedSubtasks": 5,
-        "expansionPrompt": "Divide into: (1) Add toggleRead and toggleFavorite Server Actions to lib/actions/links.ts with user authentication check, current state parameter, Supabase update with negated state, and revalidatePath, (2) Create LinkList client component wrapper in app/links/page.tsx using useOptimistic hook to manage optimistic updates with proper state shape ({ id, field, value }), (3) Implement handleToggleRead and handleToggleFavorite functions that update optimistic state immediately, call the action, and show error toast on failure, (4) Update components/link-card.tsx visual styling to differentiate read (green icon/badge) vs unread, favorite (filled red heart) vs not favorite (outline), and add aria-label to buttons for accessibility, (5) Test with Playwright MCP covering toggle actions, state persistence across refresh, visual distinction, and error recovery (offline mode → toast → state rollback)."
+        "expansionPrompt": "Divide into: (1) Add toggleRead and toggleFavorite Server Actions to lib/actions/links.ts with user authentication check, current state parameter, Supabase update with negated state, and revalidatePath, (2) Create LinkList client component wrapper in app/links/page.tsx using useOptimistic hook to manage optimistic updates with proper state shape ({ id, field, value }), (3) Implement handleToggleRead and handleToggleFavorite functions that update optimistic state immediately, call the action, and show error toast on failure, (4) Update components/link-card.tsx visual styling to differentiate read (green icon/badge) vs unread, favorite (filled red heart) vs not favorite (outline), and add aria-label to buttons for accessibility, (5) Test with Playwright MCP covering toggle actions, state persistence across refresh, visual distinction, and error recovery (offline mode → toast → state rollback).",
+        "updatedAt": "2026-08-26T11:54:13.002Z"
       },
       {
         "id": "13",
@@ -458,9 +459,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-26T11:14:53.177Z",
+      "lastModified": "2026-08-26T11:54:13.002Z",
       "taskCount": 18,
-      "completedCount": 12,
+      "completedCount": 13,
       "tags": [
         "master"
       ]
