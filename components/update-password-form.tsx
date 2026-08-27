@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { authCardClass, fieldClass, primaryButtonClass } from "@/lib/ui-classes";
 import { useRouter } from "next/navigation";
@@ -65,9 +65,8 @@ export function UpdatePasswordForm({
                 >
                   새 비밀번호
                 </Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   placeholder="새 비밀번호"
                   required
                   value={password}
