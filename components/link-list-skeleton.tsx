@@ -1,5 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+export function SearchFilterBarSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 border border-[#C7BC9E] bg-[#EAE2D0] p-4 dark:border-[#3A413C] dark:bg-[#1B1F1C] md:flex-row md:flex-wrap md:items-center">
+      <Skeleton className="h-10 flex-1 rounded-none bg-[#C7BC9E]/30 dark:bg-[#3A413C]/30 md:min-w-[220px]" />
+      <Skeleton className="h-10 w-full rounded-none bg-[#C7BC9E]/30 dark:bg-[#3A413C]/30 md:w-[140px]" />
+      <Skeleton className="h-10 w-full rounded-none bg-[#C7BC9E]/30 dark:bg-[#3A413C]/30 md:w-[120px]" />
+    </div>
+  );
+}
+
 export function LinkListSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
