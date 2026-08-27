@@ -41,7 +41,19 @@ export async function fetchLinkMetadata(url: string): Promise<MetadataFetchResul
   }
 
   try {
-    const { error, result } = await ogs({ url, timeout: TIMEOUT_SECONDS });
+    const { error, result } = await ogs({
+      url,
+      timeout: TIMEOUT_SECONDS,
+      fetchOptions: {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+          "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+          // 유튜브가 동의 화면(consent wall) 대신 실제 페이지의 OG 태그를 반환하도록 함
+          Cookie: "CONSENT=YES+1",
+        },
+      },
+    });
 
     if (error) {
       return { success: false, error: "메타데이터를 가져올 수 없어요." };
