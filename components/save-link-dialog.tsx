@@ -102,7 +102,7 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
     if (fetchIdRef.current !== requestId) return;
     setStatus(result.success ? "success" : "error");
     setMetadata(result.success ? (result.data ?? null) : null);
-    setMetadataError(result.success ? null : (result.error ?? "메타데이터를 가져올 수 없습니다."));
+    setMetadataError(result.success ? null : (result.error ?? "메타데이터를 가져올 수 없어요."));
   }
 
   function handleUrlKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -128,7 +128,7 @@ export function SaveLinkDialog({ trigger }: SaveLinkDialogProps) {
         toast.success("링크를 저장했어요.");
         handleOpenChange(false);
       } else {
-        toast.error(result.error ?? "링크 저장에 실패했습니다.");
+        toast.error(result.error ?? "링크 저장에 실패했어요.");
       }
     });
   }

@@ -33,23 +33,23 @@ export async function fetchLinkMetadata(url: string): Promise<MetadataFetchResul
   }
 
   if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-    return { success: false, error: "http/https URL만 지원합니다." };
+    return { success: false, error: "http/https URL만 지원해요." };
   }
 
   if (isBlockedHostname(parsed.hostname)) {
-    return { success: false, error: "내부망 주소는 사용할 수 없습니다." };
+    return { success: false, error: "내부망 주소는 사용할 수 없어요." };
   }
 
   try {
     const { error, result } = await ogs({ url, timeout: TIMEOUT_SECONDS });
 
     if (error) {
-      return { success: false, error: "메타데이터를 가져올 수 없습니다." };
+      return { success: false, error: "메타데이터를 가져올 수 없어요." };
     }
 
     const title = result.ogTitle || result.twitterTitle || "";
     if (!title) {
-      return { success: false, error: "제목을 찾을 수 없습니다." };
+      return { success: false, error: "제목을 찾을 수 없어요." };
     }
 
     return {
@@ -62,6 +62,6 @@ export async function fetchLinkMetadata(url: string): Promise<MetadataFetchResul
     };
   } catch (err) {
     console.error("Metadata fetch error:", err);
-    return { success: false, error: "메타데이터를 가져올 수 없습니다." };
+    return { success: false, error: "메타데이터를 가져올 수 없어요." };
   }
 }

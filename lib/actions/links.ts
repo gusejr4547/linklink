@@ -24,7 +24,7 @@ export async function createLink(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: "로그인이 필요합니다." };
+    return { success: false, error: "로그인이 필요해요." };
   }
 
   const { data, error } = await supabase
@@ -42,7 +42,7 @@ export async function createLink(
     .single();
 
   if (error || !data) {
-    return { success: false, error: "링크 저장에 실패했습니다." };
+    return { success: false, error: "링크 저장에 실패했어요." };
   }
 
   revalidatePath("/links");
@@ -56,7 +56,7 @@ export async function deleteLink(id: string): Promise<ActionResult> {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: "로그인이 필요합니다." };
+    return { success: false, error: "로그인이 필요해요." };
   }
 
   const { error } = await supabase
@@ -66,7 +66,7 @@ export async function deleteLink(id: string): Promise<ActionResult> {
     .eq("user_id", user.id);
 
   if (error) {
-    return { success: false, error: "링크 삭제에 실패했습니다." };
+    return { success: false, error: "링크 삭제에 실패했어요." };
   }
 
   revalidatePath("/links");
@@ -83,7 +83,7 @@ export async function toggleRead(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: "로그인이 필요합니다." };
+    return { success: false, error: "로그인이 필요해요." };
   }
 
   const { error } = await supabase
@@ -93,7 +93,7 @@ export async function toggleRead(
     .eq("user_id", user.id);
 
   if (error) {
-    return { success: false, error: "읽음 상태 변경에 실패했습니다." };
+    return { success: false, error: "읽음 상태 변경에 실패했어요." };
   }
 
   revalidatePath("/links");
@@ -110,7 +110,7 @@ export async function toggleFavorite(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { success: false, error: "로그인이 필요합니다." };
+    return { success: false, error: "로그인이 필요해요." };
   }
 
   const { error } = await supabase
@@ -120,7 +120,7 @@ export async function toggleFavorite(
     .eq("user_id", user.id);
 
   if (error) {
-    return { success: false, error: "즐겨찾기 변경에 실패했습니다." };
+    return { success: false, error: "즐겨찾기 변경에 실패했어요." };
   }
 
   revalidatePath("/links");

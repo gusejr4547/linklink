@@ -44,7 +44,7 @@ export function LinkCard({
         toast.success("링크를 삭제했어요.");
         setDeleteOpen(false);
       } else {
-        toast.error(result.error ?? "링크 삭제에 실패했습니다.");
+        toast.error(result.error ?? "링크 삭제에 실패했어요.");
       }
     });
   }

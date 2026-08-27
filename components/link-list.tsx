@@ -32,10 +32,10 @@ export function LinkList({ links }: { links: Link[] }) {
       try {
         const result = await toggleRead(link.id, link.is_read);
         if (!result.success) {
-          toast.error(result.error ?? "읽음 상태 변경에 실패했습니다.");
+          toast.error(result.error ?? "읽음 상태 변경에 실패했어요.");
         }
       } catch {
-        toast.error("읽음 상태 변경에 실패했습니다.");
+        toast.error("읽음 상태 변경에 실패했어요.");
       }
     });
   }
@@ -47,10 +47,10 @@ export function LinkList({ links }: { links: Link[] }) {
       try {
         const result = await toggleFavorite(link.id, link.is_favorite);
         if (!result.success) {
-          toast.error(result.error ?? "즐겨찾기 변경에 실패했습니다.");
+          toast.error(result.error ?? "즐겨찾기 변경에 실패했어요.");
         }
       } catch {
-        toast.error("즐겨찾기 변경에 실패했습니다.");
+        toast.error("즐겨찾기 변경에 실패했어요.");
       }
     });
   }
