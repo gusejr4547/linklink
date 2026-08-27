@@ -437,11 +437,12 @@
         "dependencies": [
           "15"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "complexity": 6,
         "recommendedSubtasks": 6,
-        "expansionPrompt": "Structure as: (1) Create .env.example documenting all required environment variables (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY), (2) Connect GitHub repo to Vercel, configure environment variables in dashboard, deploy main branch, and note production URL, (3) Update Supabase Auth configuration in dashboard to add production callback/confirm URLs and update site URL, (4) Verify production build by checking logs, testing all pages for 500 errors, checking browser console for client errors, and confirming HTTPS/SSL works, (5) Run smoke tests in production (manual or Playwright MCP) covering full user journey (signup, login, save, search, toggle, delete, logout), (6) Test OG metadata edge cases in production (login-required pages, SNS private posts, slow sites with timeout) and document findings in PRD '[확인 필요]' section with verdict on whether manual fallback is sufficient."
+        "expansionPrompt": "Structure as: (1) Create .env.example documenting all required environment variables (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY), (2) Connect GitHub repo to Vercel, configure environment variables in dashboard, deploy main branch, and note production URL, (3) Update Supabase Auth configuration in dashboard to add production callback/confirm URLs and update site URL, (4) Verify production build by checking logs, testing all pages for 500 errors, checking browser console for client errors, and confirming HTTPS/SSL works, (5) Run smoke tests in production (manual or Playwright MCP) covering full user journey (signup, login, save, search, toggle, delete, logout), (6) Test OG metadata edge cases in production (login-required pages, SNS private posts, slow sites with timeout) and document findings in PRD '[확인 필요]' section with verdict on whether manual fallback is sufficient.",
+        "updatedAt": "2026-08-27T07:16:03.218Z"
       },
       {
         "id": "17",
@@ -477,9 +478,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-27T04:50:03.004Z",
+      "lastModified": "2026-08-27T07:16:03.218Z",
       "taskCount": 18,
-      "completedCount": 17,
+      "completedCount": 18,
       "tags": [
         "master"
       ]
