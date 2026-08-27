@@ -29,10 +29,17 @@ const ThemeSwitcher = ({ className }: { className?: string }) => {
 
   const ICON_SIZE = 16;
 
+  const themeLabel =
+    theme === "light" ? "라이트" : theme === "dark" ? "다크" : "시스템";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className={className}>
+        <Button
+          variant="ghost"
+          className={className}
+          aria-label={`테마 전환 (현재: ${themeLabel})`}
+        >
           {theme === "light" ? (
             <Sun
               key="light"
@@ -61,15 +68,15 @@ const ThemeSwitcher = ({ className }: { className?: string }) => {
         >
           <DropdownMenuRadioItem className="flex gap-2" value="light">
             <Sun size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>Light</span>
+            <span>라이트</span>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex gap-2" value="dark">
             <Moon size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>Dark</span>
+            <span>다크</span>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem className="flex gap-2" value="system">
             <Laptop size={ICON_SIZE} className="text-muted-foreground" />{" "}
-            <span>System</span>
+            <span>시스템</span>
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

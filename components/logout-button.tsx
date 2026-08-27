@@ -15,7 +15,7 @@ export function LogoutButton({ className }: { className?: string }) {
 
   return (
     <Button onClick={logout} className={className}>
-      Logout
+      로그아웃
     </Button>
   );
 }
