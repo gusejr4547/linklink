@@ -474,13 +474,27 @@
         ],
         "priority": "medium",
         "subtasks": []
+      },
+      {
+        "id": "19",
+        "title": "PWA 설치 지원 (Web App Manifest 및 아이콘) 추가",
+        "description": "홈 화면 설치가 가능한 최소 PWA 구성. 이 Next.js 버전의 내장 매니페스트/아이콘 컨벤션(app/manifest.ts, generateImageMetadata)만으로 구현하고, 푸시 알림·서비스워커 기반 오프라인 캐싱은 범위에서 제외한다(1인 사용자 도구 규모에 비해 과도한 복잡도 — docs/PRD.md 8절 참고).",
+        "details": "배경: node_modules/next/dist/docs/01-app/02-guides/progressive-web-apps.md와 manifest.md 확인 결과, 이 Next.js 버전은 app/manifest.ts(MetadataRoute.Manifest)로 정적/동적 매니페스트를 자동 생성하고 <link rel=\"manifest\">도 자동 주입한다. 현재 app/icon.tsx(32x32, ImageResponse)와 app/apple-icon.tsx(180x180)는 이미 브랜드 색상(bg #1B1F1C, accent #35C9A8, \"L\" 워드마크)으로 구현되어 있으므로 그 디자인을 재사용한다.\n\n1. app/manifest.ts 신규 작성: name \"LinkLink\", short_name \"LinkLink\", description은 layout.tsx의 메타 설명과 통일, start_url \"/\", display \"standalone\", background_color \"#1B1F1C\", theme_color \"#1B1F1C\", icons 배열에 192x192·512x512(및 가능하면 maskable purpose 하나 포함).\n2. 192/512 아이콘 소스 확보: 기존 app/icon.tsx를 손대지 않고, generateImageMetadata를 사용하는 별도 아이콘 라우트(예: app/manifest-icons 하위 또는 app/icon.tsx 확장 중 리스크가 적은 쪽 선택)를 만들어 icon.tsx/apple-icon.tsx와 동일한 디자인(#1B1F1C 배경, #35C9A8 \"L\")을 192/512 크기로 렌더링하고, 빌드 결과물에서 실제 생성 경로를 확인해 manifest.ts의 icons[].src에 정확히 반영한다.\n3. app/layout.tsx의 Metadata에 필요 시 themeColor(App Router에서는 별도 viewport export일 수 있음 — 로컬 Next.js 문서로 정확한 API 재확인 후 적용)를 매니페스트와 일치시켜 브라우저 주소창/상태바 색상을 통일한다.\n4. iOS 홈 화면 설치는 이미 apple-icon.tsx로 충족되지만, standalone 모드로 실행했을 때 proxy.ts의 인증 리다이렉트(/auth/login)나 기존 페이지 전환이 깨지지 않는지 확인한다.\n5. 범위에서 명시적으로 제외: Web Push 알림(VAPID, service worker), next.config.ts의 experimental.useOffline 기반 오프라인 재시도, Serwist 등 서비스워커 풀 오프라인 캐싱 — 필요성이 확인되면 별도 태스크로 분리.",
+        "testStrategy": "1. npx tsc --noEmit / npm run lint 통과.\n2. npm run build 후 생성된 /manifest.webmanifest(또는 .json) 응답을 curl/브라우저로 열어 name·icons 경로가 200으로 응답하는지 확인.\n3. Chrome DevTools > Application > Manifest 패널에서 \"Installability\" 오류 없음 확인, 반응형 모드(모바일 뷰포트)에서 설치 배너/설치 아이콘 노출 확인.\n4. standalone 모드(또는 DevTools에서 display-mode 에뮬레이션)로 로그인 → /links 이동 → 링크 저장까지 기존 핵심 플로우가 깨지지 않는지 수동 확인.\n5. 상호작용 흐름 변경이 아닌 정적 설정 추가이므로 test-verifier 필수 위임 대상은 아니지만, standalone 모드에서의 인증 리다이렉트 확인처럼 브라우저 조작이 필요한 항목은 필요 시 test-verifier에 위임한다.",
+        "status": "done",
+        "dependencies": [
+          "15"
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-08-27T08:30:30.879Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-08-27T07:16:03.218Z",
-      "taskCount": 18,
-      "completedCount": 18,
+      "lastModified": "2026-08-27T08:30:30.880Z",
+      "taskCount": 19,
+      "completedCount": 19,
       "tags": [
         "master"
       ]

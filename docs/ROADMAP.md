@@ -207,6 +207,15 @@ LinkLink는 "저장은 쉬운데 다시 찾기가 안 되는" 1인 사용자를 
   - 배포 환경에서 Playwright MCP 스모크 테스트 수행 (저장 → 검색 → 토글 → 삭제)
   - PRD의 `[확인 필요]` 항목 재확인: OG 수집 실패 사이트(로그인 필요 페이지, SNS 비공개 게시물)에서 수동 입력 폴백이 실사용상 충분한지 판단하고 결과를 PRD에 반영
 
+### Phase 5: 설치형 앱 경험 (PWA)
+
+- ✅ **Task 016: PWA 설치 지원 (Web App Manifest 및 아이콘) 추가**
+  - `app/manifest.ts` 신규 작성 (name/short_name/description, `display: "standalone"`, `background_color`/`theme_color` = `#1B1F1C`), `app/layout.tsx`에 `viewport.themeColor` 추가
+  - `app/icons/192/route.tsx`·`app/icons/512/route.tsx`를 `next/og`의 `ImageResponse`로 신규 작성 — 기존 `app/icon.tsx`·`app/apple-icon.tsx`와 동일한 브랜드 디자인(배경 `#1B1F1C`, 포인트 `#35C9A8`, "L" 워드마크)
+  - **발견된 버그**: `proxy.ts`의 인증 미들웨어가 무자격 증명(credentials: 'omit')으로 오는 `/manifest.webmanifest`·`/icons/*` 요청까지 `/auth/login`으로 307 리다이렉트시켜, 로그인 여부와 무관하게 브라우저의 매니페스트 자동 파싱이 항상 실패하던 것을 test-verifier E2E로 확인. `config.matcher`에 `manifest.webmanifest`, `icon`, `icons/`, `apple-icon`, `opengraph-image` 예외를 추가해 해당 공개 메타데이터 라우트를 미들웨어 적용 대상에서 제외하여 해결(기존 `/icon`·`/apple-icon`·`/opengraph-image`도 동일 문제였던 것이 함께 해소됨)
+  - test-verifier로 매니페스트 JSON·아이콘 PNG 정상 응답, `<link rel="manifest">` 주입, 로그인/저장/삭제 핵심 플로우 회귀 없음을 확인
+  - 범위 제외: Web Push 알림(VAPID/서비스워커), `experimental.useOffline` 기반 오프라인 재시도, Serwist 등 서비스워커 풀 오프라인 캐싱 — 필요성 확인 시 별도 Task로 분리
+
 ## 범위 밖 (의도적으로 미루는 것)
 
 PRD 8절에 따라 아래 항목은 이번 로드맵에 포함하지 않습니다. 필요성이 확인되면 새 Task로 추가합니다.
@@ -215,5 +224,5 @@ PRD 8절에 따라 아래 항목은 이번 로드맵에 포함하지 않습니�
 - RLS 정책 세분화, Rate limiting
 - 메타데이터 수집 실패 재시도/큐 처리
 - 자동화 테스트 코드 커버리지 (Playwright MCP 수동 검증으로 대체)
-- 모바일 앱/PWA
+- PWA 중 Web Push 알림·서비스워커 기반 완전 오프라인 캐싱 (설치형 홈 화면 진입은 Phase 5로 편입)
 - 키워드 자동 추출/AI 분석, 리마인드 알림, 트리형 카테고리, 소셜 로그인, 링크 공유
