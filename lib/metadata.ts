@@ -20,6 +20,62 @@ function isBlockedHostname(hostname: string): boolean {
   return BLOCKED_HOSTNAME_PATTERNS.some((pattern) => pattern.test(hostname));
 }
 
+const YOUTUBE_HOSTNAMES = new Set([
+  "youtube.com",
+  "www.youtube.com",
+  "m.youtube.com",
+  "music.youtube.com",
+  "youtu.be",
+]);
+
+function extractYoutubeVideoId(parsed: URL): string | null {
+  const hostname = parsed.hostname.toLowerCase();
+  if (!YOUTUBE_HOSTNAMES.has(hostname)) return null;
+
+  if (hostname === "youtu.be") {
+    return parsed.pathname.slice(1).split("/")[0] || null;
+  }
+
+  const vParam = parsed.searchParams.get("v");
+  if (vParam) return vParam;
+
+  const shortsMatch = parsed.pathname.match(/^\/shorts\/([^/]+)/);
+  if (shortsMatch) return shortsMatch[1];
+
+  const embedMatch = parsed.pathname.match(/^\/embed\/([^/]+)/);
+  if (embedMatch) return embedMatch[1];
+
+  return null;
+}
+
+interface YoutubeOEmbedResponse {
+  title?: string;
+  thumbnail_url?: string;
+}
+
+async function fetchYoutubeOEmbed(url: string): Promise<LinkMetadata | null> {
+  try {
+    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;
+    const res = await fetch(oembedUrl, {
+      signal: AbortSignal.timeout(TIMEOUT_SECONDS * 1000),
+    });
+
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as YoutubeOEmbedResponse;
+    if (!data.title) return null;
+
+    return {
+      title: data.title,
+      description: null,
+      thumbnail_url: data.thumbnail_url || null,
+    };
+  } catch (err) {
+    console.error("YouTube oEmbed fetch error:", err);
+    return null;
+  }
+}
+
 export type MetadataFetchResult =
   | { success: true; data: LinkMetadata }
   | { success: false; error: string };
@@ -38,6 +94,15 @@ export async function fetchLinkMetadata(url: string): Promise<MetadataFetchResul
 
   if (isBlockedHostname(parsed.hostname)) {
     return { success: false, error: "내부망 주소는 사용할 수 없어요." };
+  }
+
+  // 유튜브는 워치 페이지 스크래핑이 배포 환경(서버리스 IP)에서 봇 탐지에 걸리기 쉬워
+  // 공식 oEmbed API를 우선 사용하고, 실패(비공개/삭제된 영상 등)할 때만 일반 스크래핑으로 폴백한다.
+  if (extractYoutubeVideoId(parsed)) {
+    const oembedResult = await fetchYoutubeOEmbed(url);
+    if (oembedResult) {
+      return { success: true, data: oembedResult };
+    }
   }
 
   try {
