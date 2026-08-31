@@ -161,16 +161,28 @@ export function LinkCard({
           <Trash2 />
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-none border-[#23282A] bg-[#EAE2D0] dark:border-[#EAE2D0] dark:bg-[#1B1F1C]">
         <AlertDialogHeader>
-          <AlertDialogTitle>링크를 삭제할까요?</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="font-[family-name:var(--font-display)] text-[#23282A] dark:text-[#EAE2D0]">
+            링크를 삭제할까요?
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-[#5B6360] dark:text-[#9BA39A]">
             &ldquo;{link.title}&rdquo; 링크를 삭제하면 되돌릴 수 없어요.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>취소</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting}>
+          <AlertDialogCancel
+            disabled={isDeleting}
+            className="rounded-none border-[#23282A] bg-transparent text-[#23282A] hover:bg-[#23282A] hover:text-[#EAE2D0] dark:border-[#EAE2D0] dark:text-[#EAE2D0] dark:hover:bg-[#EAE2D0] dark:hover:text-[#1B1F1C]"
+          >
+            취소
+          </AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
+            className="rounded-none"
+            onClick={handleConfirmDelete}
+            disabled={isDeleting}
+          >
             {isDeleting ? "삭제 중..." : "삭제"}
           </AlertDialogAction>
         </AlertDialogFooter>
