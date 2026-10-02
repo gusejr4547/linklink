@@ -12,7 +12,7 @@ LinkLink — 흩어진 링크를 한곳에 저장하고 태그·메모·읽음 �
 ## 기술 스택 관련 주의사항
 
 - **Tailwind CSS v4** 사용 중. `tailwind.config.ts` 없음 — 테마 토큰은 `app/globals.css`의 `@theme inline` 블록, 다크모드는 `@custom-variant dark`.
-- shadcn/ui는 "new-york" 스타일, `@/components`·`@/lib`·`@/hooks` 별칭 사용. 설치된 컴포넌트: `badge`, `button`, `card`, `checkbox`, `dropdown-menu`, `input`, `label` — 그 외는 `npx shadcn add`로 설치.
+- shadcn/ui는 "new-york" 스타일, `@/components`·`@/lib`·`@/hooks` 별칭 사용. 설치된 컴포넌트는 `components/ui/`에서 확인하고, 없는 것은 `npx shadcn add`로 설치.
 - `next.config.ts`의 `cacheComponents: true`로 인해 Server Action에서 캐시되지 않은 데이터는 `<Suspense>`로 감싸야 함.
 - `proxy.ts`(루트)가 Next.js 프록시(구 미들웨어) 역할을 하며 `lib/supabase/proxy.ts`의 `updateSession`으로 비로그인 접근을 `/auth/login`으로 리다이렉트함.
 - `.mcp.json`에 Supabase MCP 서버와 `taskmaster-ai` MCP 서버가 연결되어 있고, `.claude/settings.json`에 `playwright` 플러그인이 활성화되어 있음.
